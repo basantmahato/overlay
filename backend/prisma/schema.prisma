@@ -15,7 +15,9 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  overlays Overlay[]
+  overlays     Overlay[]
+  auditLogs    AuditLog[]
+  subscription Subscription?
 }
 
 model Template {
@@ -25,7 +27,9 @@ model Template {
   isActive   Boolean  @default(true)
   createdAt  DateTime @default(now())
 
-  overlays Overlay[]
+  overlays   Overlay[]
+  categoryId String?
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
 
   @@map("templates")
 }
@@ -50,4 +54,64 @@ model Overlay {
   @@index([userId])
   @@index([templateId])
   @@map("overlays")
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  userId    String?
+  action    String
+  details   Json?
+  ipAddress String?
+  createdAt DateTime @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("audit_logs")
+}
+
+model Lead {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  message   String?
+  source    String? // e.g. "landing-page", "footer"
+  status    String   @default("NEW") // NEW, CONTACTED, CONVERTED
+  createdAt DateTime @default(now())
+
+  @@map("leads")
+}
+
+model Plan {
+  id        String   @id @default(uuid())
+  name      String   @unique // "FREE", "PRO", "ENTERPRISE"
+  price     Float    @default(0)
+  interval  String   @default("MONTHLY")
+  features  Json? // e.g. { "maxOverlays": 5, "customBranding": true }
+  createdAt DateTime @default(now())
+
+  subscriptions Subscription[]
+
+  @@map("plans")
+}
+
+model Subscription {
+  id               String    @id @default(uuid())
+  userId           String    @unique
+  planId           String
+  status           String    @default("ACTIVE")
+  currentPeriodEnd DateTime?
+  stripeId         String?   @unique
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan Plan @relation(fields: [planId], references: [id])
+
+  @@map("subscriptions")
+}
+
+model Category {
+  id        String     @id @default(uuid())
+  name      String     @unique
+  templates Template[]
+
+  @@map("categories")
 }

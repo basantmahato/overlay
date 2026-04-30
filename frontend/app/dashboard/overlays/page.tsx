@@ -192,17 +192,23 @@ export default function OverlaysPage() {
                             if (e.key === 'Escape') cancelEdit();
                           }}
                           autoFocus
+                          placeholder="Overlay name"
+                          aria-label="Overlay name"
                           className="flex-1 bg-zinc-950 border border-indigo-500/50 rounded-lg px-2 py-1 text-sm text-white focus:outline-none"
                         />
                         <button 
                           onClick={saveEdit}
                           className="p-1.5 text-emerald-400 hover:bg-zinc-700 rounded-lg transition-colors"
+                          title="Save"
+                          aria-label="Save"
                         >
                           <Check size={14} />
                         </button>
                         <button 
                           onClick={cancelEdit}
                           className="p-1.5 text-red-400 hover:bg-zinc-700 rounded-lg transition-colors"
+                          title="Cancel"
+                          aria-label="Cancel"
                         >
                           <X size={14} />
                         </button>

@@ -43,23 +43,17 @@ export const Temp2Dashboard: React.FC<Temp2DashboardProps> = ({
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Timer functionality
+  // Timer functionality: strictly updates local state
   useEffect(() => {
     if (isTimerRunning) {
       timerRef.current = setInterval(() => {
-        setElapsedSeconds(prev => {
-          const newSeconds = prev + 1;
-          const minutes = Math.floor(newSeconds / 60);
-          const seconds = newSeconds % 60;
-          const timeString = seconds > 0 ? `${minutes}'${seconds.toString().padStart(2, '0')}` : `${minutes}'`;
-          setState(s => ({ ...s, match_time: timeString }));
-          onPush({ match_time: timeString });
-          return newSeconds;
-        });
+        setElapsedSeconds(prev => prev + 1);
       }, 1000);
-    } else if (timerRef.current) {
-      clearInterval(timerRef.current);
-      timerRef.current = null;
+    } else {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
     }
 
     return () => {
@@ -67,7 +61,48 @@ export const Temp2Dashboard: React.FC<Temp2DashboardProps> = ({
         clearInterval(timerRef.current);
       }
     };
-  }, [isTimerRunning, onPush]);
+  }, [isTimerRunning]);
+
+  // Sync elapsedSeconds to parent state (outside of render/updater phase)
+  useEffect(() => {
+    if (!isTimerRunning) return;
+    
+    const minutes = Math.floor(elapsedSeconds / 60);
+    const seconds = elapsedSeconds % 60;
+    const timeString = seconds > 0 ? `${minutes}'${seconds.toString().padStart(2, '0')}` : `${minutes}'`;
+    
+    // Only update if changed to avoid unnecessary re-renders
+    if (state.match_time !== timeString) {
+      setState(s => ({ ...s, match_time: timeString }));
+      onPush({ match_time: timeString });
+    }
+  }, [elapsedSeconds, isTimerRunning, onPush, setState, state.match_time]);
+
+  // Initialize/Sync elapsedSeconds from parent match_time
+  useEffect(() => {
+    if (isTimerRunning) return;
+    
+    const timeStr = state.match_time || '0\'';
+    let totalSeconds = 0;
+    
+    if (timeStr.includes("'")) {
+      const parts = timeStr.split("'");
+      const mins = parseInt(parts[0]) || 0;
+      const secs = parseInt(parts[1]) || 0;
+      totalSeconds = mins * 60 + secs;
+    } else if (timeStr.includes(":")) {
+      const parts = timeStr.split(":");
+      const mins = parseInt(parts[0]) || 0;
+      const secs = parseInt(parts[1]) || 0;
+      totalSeconds = mins * 60 + secs;
+    } else {
+      totalSeconds = (parseInt(timeStr) || 0) * 60;
+    }
+    
+    if (totalSeconds !== elapsedSeconds) {
+      setElapsedSeconds(totalSeconds);
+    }
+  }, [state.match_time, isTimerRunning]);
 
   const toggleTimer = () => {
     setIsTimerRunning(!isTimerRunning);
@@ -209,6 +244,7 @@ export const Temp2Dashboard: React.FC<Temp2DashboardProps> = ({
                       type="color"
                       value={state.teamA_color}
                       onChange={(e) => setState(s => ({ ...s, teamA_color: e.target.value }))}
+                      aria-label="Home team color"
                       className="w-14 h-12 bg-[#1a1f2e] border border-[#1e293b] rounded-xl cursor-pointer p-1"
                     />
                   </div>
@@ -237,6 +273,7 @@ export const Temp2Dashboard: React.FC<Temp2DashboardProps> = ({
                       type="color"
                       value={state.teamB_color}
                       onChange={(e) => setState(s => ({ ...s, teamB_color: e.target.value }))}
+                      aria-label="Away team color"
                       className="w-14 h-12 bg-[#1a1f2e] border border-[#1e293b] rounded-xl cursor-pointer p-1"
                     />
                   </div>
@@ -261,6 +298,7 @@ export const Temp2Dashboard: React.FC<Temp2DashboardProps> = ({
                 <div className="flex items-center justify-center gap-4 bg-[#1a1f2e] rounded-2xl p-4">
                   <button
                     onClick={() => updateScore('h', -1)}
+                    aria-label="Decrease home score"
                     className="w-12 h-12 rounded-full bg-[#1e293b] hover:bg-[#3b82f6] flex items-center justify-center transition-all hover:scale-110"
                   >
                     <span className="text-xl font-bold">−</span>
@@ -268,6 +306,7 @@ export const Temp2Dashboard: React.FC<Temp2DashboardProps> = ({
                   <span className="text-5xl font-black font-mono w-16 text-center">{state.teamA_score}</span>
                   <button
                     onClick={() => updateScore('h', 1)}
+                    aria-label="Increase home score"
                     className="w-12 h-12 rounded-full bg-[#1e293b] hover:bg-[#3b82f6] flex items-center justify-center transition-all hover:scale-110"
                   >
                     <span className="text-xl font-bold">+</span>
@@ -280,6 +319,7 @@ export const Temp2Dashboard: React.FC<Temp2DashboardProps> = ({
                 <div className="flex items-center justify-center gap-4 bg-[#1a1f2e] rounded-2xl p-4">
                   <button
                     onClick={() => updateScore('a', -1)}
+                    aria-label="Decrease away score"
                     className="w-12 h-12 rounded-full bg-[#1e293b] hover:bg-[#3b82f6] flex items-center justify-center transition-all hover:scale-110"
                   >
                     <span className="text-xl font-bold">−</span>
@@ -287,6 +327,7 @@ export const Temp2Dashboard: React.FC<Temp2DashboardProps> = ({
                   <span className="text-5xl font-black font-mono w-16 text-center">{state.teamB_score}</span>
                   <button
                     onClick={() => updateScore('a', 1)}
+                    aria-label="Increase away score"
                     className="w-12 h-12 rounded-full bg-[#1e293b] hover:bg-[#3b82f6] flex items-center justify-center transition-all hover:scale-110"
                   >
                     <span className="text-xl font-bold">+</span>
@@ -332,6 +373,7 @@ export const Temp2Dashboard: React.FC<Temp2DashboardProps> = ({
                 />
                 <button 
                   onClick={toggleTimer}
+                  aria-label={isTimerRunning ? "Pause timer" : "Start timer"}
                   className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${
                     isTimerRunning 
                       ? 'bg-[#3b82f6] hover:bg-[#2563eb]' 
@@ -349,10 +391,10 @@ export const Temp2Dashboard: React.FC<Temp2DashboardProps> = ({
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-xs font-bold text-[#94a3b8] uppercase tracking-wider">Match Events</h3>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] text-[#64748b]">Show for</span>
                 <select
                   value={state.eventDisplayMinutes || 1}
                   onChange={(e) => onPush({ eventDisplayMinutes: parseInt(e.target.value) })}
+                  aria-label="Event display duration"
                   className="bg-[#1a1f2e] border border-[#1e293b] rounded-lg px-2 py-1 text-[10px] focus:outline-none focus:border-[#3b82f6]"
                 >
                   <option value={1}>1 min</option>
@@ -360,12 +402,14 @@ export const Temp2Dashboard: React.FC<Temp2DashboardProps> = ({
                   <option value={5}>5 min</option>
                   <option value={10}>10 min</option>
                 </select>
+                <label className="text-[10px] text-[#64748b]">Show for</label>
               </div>
             </div>
             <div className="space-y-3">
               <select
                 value={eventType}
                 onChange={(e) => setEventType(e.target.value)}
+                aria-label="Event type"
                 className="w-full bg-[#1a1f2e] border border-[#1e293b] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#3b82f6] transition-all"
               >
                 <option>Goal</option>
@@ -376,6 +420,7 @@ export const Temp2Dashboard: React.FC<Temp2DashboardProps> = ({
               <select
                 value={eventTeam}
                 onChange={(e) => setEventTeam(e.target.value)}
+                aria-label="Event team"
                 className="w-full bg-[#1a1f2e] border border-[#1e293b] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#3b82f6] transition-all"
               >
                 <option value="h">{state.teamA_name}</option>
@@ -418,6 +463,7 @@ export const Temp2Dashboard: React.FC<Temp2DashboardProps> = ({
                     onClick={() => removeEvent(i)}
                     className="ml-auto opacity-0 group-hover:opacity-100 text-red-400 hover:text-red-300 transition-all p-1 hover:bg-red-400/10 rounded"
                     title="Remove event"
+                    aria-label="Remove event"
                   >
                     <X size={12} />
                   </button>
