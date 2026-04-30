@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  password     String
+  refreshToken String?
+  role         String   @default("USER") // "ADMIN" or "USER"
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  overlays Overlay[]
+}
+
+model Template {
+  id         String   @id @default(uuid())
+  name       String
+  configJson Json
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+
+  overlays Overlay[]
+
+  @@map("templates")
+}
+
+model Overlay {
+  id         String @id @default(uuid())
+  name       String
+  userId     String
+  templateId String
+
+  customSettingsJson Json?
+  renderedConfigJson Json?
+
+  isActive Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  template Template @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([templateId])
+  @@map("overlays")
+}
