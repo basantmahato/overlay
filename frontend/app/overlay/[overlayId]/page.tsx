@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import io, { Socket } from 'socket.io-client';
 import axios from 'axios';
-import Temp2Overlay from '@/components/overlays/Temp2Overlay';
+import { getTemplate } from '@/lib/templateRegistry';
 
 const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:5000';
 const API_BASE   = process.env.NEXT_PUBLIC_API_URL    || 'http://localhost:5000/api/v1';
@@ -12,7 +12,7 @@ const API_BASE   = process.env.NEXT_PUBLIC_API_URL    || 'http://localhost:5000/
 export default function OverlayPage() {
   const { overlayId } = useParams<{ overlayId: string }>();
   const [state, setState]       = useState<any>(null);
-  const [templateName, setTemplateName] = useState<string>('');
+  const [templateId, setTemplateId] = useState<string>('');
   const [connected, setConnected] = useState(false);
   const [showEvent, setShowEvent] = useState(false);
   const [eventText, setEventText] = useState('');
@@ -28,7 +28,7 @@ export default function OverlayPage() {
     axios.get(`${API_BASE}/overlays/${overlayId}/state`)
       .then(r => {
         setState(r.data.state);
-        setTemplateName(r.data.template.name);
+        setTemplateId(r.data.template.id);
       })
       .catch(() => {});
   }, [overlayId]);
@@ -67,7 +67,21 @@ export default function OverlayPage() {
 
   // ── Template Rendering ─────────────────────────────────────────────────
   const renderLayout = () => {
-    return <Temp2Overlay state={state} bumpA={bumpA} bumpB={bumpB} />;
+    const templateEntry = getTemplate(templateId);
+    
+    if (!templateEntry) {
+      return (
+        <div className="fixed inset-0 flex items-center justify-center text-red-400">
+          <div className="text-center">
+            <p className="font-bold">Unknown Template</p>
+            <p className="text-sm text-zinc-500">{templateId}</p>
+          </div>
+        </div>
+      );
+    }
+    
+    const OverlayComponent = templateEntry.overlay;
+    return <OverlayComponent state={state} bumpA={bumpA} bumpB={bumpB} />;
   };
 
   return (

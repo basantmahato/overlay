@@ -4,7 +4,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import io, { Socket } from 'socket.io-client';
 import api from '@/lib/api';
 import { NewOverlayModal } from '@/components/dashboard/overlay/modals/NewOverlayModal';
-import { Temp2Dashboard } from '@/components/template/temp2/dashboard';
+import { getTemplate, DashboardProps } from '@/lib/templateRegistry';
 import { Pencil, Trash2, Check, X } from 'lucide-react';
 
 import { MatchState, Overlay, Template } from '@/types';
@@ -134,10 +134,28 @@ export default function OverlaysPage() {
 
   if (loading) return null;
 
-  // Show Pro Broadcast dashboard for all overlays
+  // Show template-specific dashboard
   if (activeOverlay) {
+    const templateEntry = getTemplate(activeOverlay.template.id);
+    
+    if (!templateEntry) {
+      return (
+        <div className="p-6">
+          <button onClick={() => setActiveId(null)} className="text-zinc-400 hover:text-white mb-4">
+            ← Back
+          </button>
+          <div className="bg-red-900/20 border border-red-800 rounded-xl p-6 text-red-400">
+            <h2 className="font-bold mb-2">Template Not Found</h2>
+            <p className="text-sm">Template &quot;{activeOverlay.template.name}&quot; (ID: {activeOverlay.template.id}) is not registered.</p>
+          </div>
+        </div>
+      );
+    }
+    
+    const DashboardComponent = templateEntry.dashboard;
+    
     return (
-      <Temp2Dashboard 
+      <DashboardComponent 
         state={state} 
         setState={setState} 
         onPush={push} 

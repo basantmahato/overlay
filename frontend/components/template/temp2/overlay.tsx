@@ -53,7 +53,7 @@ const EventIcon: React.FC<{ type: string; size?: number }> = ({ type, size = 16 
   return icons[type] || <span>{type}</span>;
 };
 
-interface Temp2OverlayProps {
+export interface Temp2OverlayProps {
   state: MatchState;
   bumpA?: boolean;
   bumpB?: boolean;
@@ -132,9 +132,14 @@ export const Temp2Overlay: React.FC<Temp2OverlayProps> = ({ state, bumpA, bumpB 
         .event-popup.card-yellow { border-color: #fbbf24; }
         .event-popup.card-red { border-color: #ef4444; }
         .event-popup.sub { border-color: #3b82f6; }
+        .overlay-container-temp2 {
+          --team-a-color: ${state.teamA_color || '#1a4a8a'};
+          --team-b-color: ${state.teamB_color || '#cc0000'};
+          --border-top-radius: ${state.competition || state.venue ? '0px' : '12px'};
+        }
       `}</style>
 
-      <div className="fixed bottom-[72px] left-1/2 -translate-x-1/2 flex flex-col items-center">
+      <div className="fixed bottom-[72px] left-1/2 -translate-x-1/2 flex flex-col items-center overlay-container-temp2">
         {/* Top Bar - Competition & Venue */}
         {(state.competition || state.venue) && (
           <div className="bg-[rgba(15,17,26,0.95)] backdrop-blur-[10px] px-4 py-1 rounded-t-lg border border-[rgba(255,255,255,0.1)] border-b-0">
@@ -148,14 +153,12 @@ export const Temp2Overlay: React.FC<Temp2OverlayProps> = ({ state, bumpA, bumpB 
 
         {/* Scoreboard */}
         <div 
-          className="flex items-stretch h-16 bg-[rgba(15,17,26,0.95)] backdrop-blur-[10px] rounded-b-xl shadow-[0_12px_40px_rgba(0,0,0,0.6)] border border-[rgba(255,255,255,0.1)] overflow-hidden"
-          style={{ borderTopLeftRadius: state.competition || state.venue ? 0 : '12px' }}
+          className="flex items-stretch h-16 bg-[rgba(15,17,26,0.95)] backdrop-blur-[10px] rounded-b-xl shadow-[0_12px_40px_rgba(0,0,0,0.6)] border border-[rgba(255,255,255,0.1)] overflow-hidden rounded-tl-[var(--border-top-radius)]"
         >
           {/* Home Team */}
           <div className="flex items-center px-6 gap-4 relative border-r border-[rgba(255,255,255,0.1)]">
             <div 
-              className="absolute left-0 top-0 w-1 h-full"
-              style={{ backgroundColor: state.teamA_color || '#1a4a8a' }}
+              className="absolute left-0 top-0 w-1 h-full bg-[var(--team-a-color)]"
             />
             <span className="text-2xl font-extrabold tracking-tight">
               {state.teamA_abbr || 'HOME'}
@@ -182,8 +185,7 @@ export const Temp2Overlay: React.FC<Temp2OverlayProps> = ({ state, bumpA, bumpB 
               {state.teamB_abbr || 'AWAY'}
             </span>
             <div 
-              className="absolute right-0 top-0 w-1 h-full"
-              style={{ backgroundColor: state.teamB_color || '#cc0000' }}
+              className="absolute right-0 top-0 w-1 h-full bg-[var(--team-b-color)]"
             />
           </div>
         </div>

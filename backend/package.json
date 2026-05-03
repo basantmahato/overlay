@@ -10,7 +10,12 @@
     "db:generate": "npx prisma generate",
     "db:seed": "npx prisma db seed",
     "db:studio": "npx prisma studio",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "seed:templates": "node prisma/seeds/templateSeed.js",
+    "seed:admin": "node prisma/seeds/dashadminseed.js",
+    "cleanup:templates": "node prisma/seeds/cleanupTemplates.js",
+    "remove-all-templates": "node prisma/seeds/removeAllTemplates.seed.js"
+
   },
   "keywords": [],
   "author": "",

@@ -24,7 +24,7 @@ const EventIcon: React.FC<{ type: string; size?: number }> = ({ type, size = 14 
   }
 };
 
-interface Temp2DashboardProps {
+export interface Temp2DashboardProps {
   state: MatchState;
   setState: React.Dispatch<React.SetStateAction<MatchState>>;
   onPush: (patch: Partial<MatchState>) => void;
@@ -189,10 +189,14 @@ export const Temp2Dashboard: React.FC<Temp2DashboardProps> = ({
             </h2>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-xs font-bold text-[#94a3b8] uppercase tracking-wider mb-2 block">
+                <label 
+                  htmlFor="competition-input"
+                  className="text-xs font-bold text-[#94a3b8] uppercase tracking-wider mb-2 block"
+                >
                   Competition / League
                 </label>
                 <input
+                  id="competition-input"
                   type="text"
                   value={state.competition || ''}
                   onChange={(e) => setState(s => ({ ...s, competition: e.target.value }))}
@@ -201,10 +205,14 @@ export const Temp2Dashboard: React.FC<Temp2DashboardProps> = ({
                 />
               </div>
               <div>
-                <label className="text-xs font-bold text-[#94a3b8] uppercase tracking-wider mb-2 block">
+                <label 
+                  htmlFor="venue-input"
+                  className="text-xs font-bold text-[#94a3b8] uppercase tracking-wider mb-2 block"
+                >
                   Venue / Stadium
                 </label>
                 <input
+                  id="venue-input"
                   type="text"
                   value={state.venue || ''}
                   onChange={(e) => setState(s => ({ ...s, venue: e.target.value }))}
@@ -225,7 +233,9 @@ export const Temp2Dashboard: React.FC<Temp2DashboardProps> = ({
               <div>
                 <h3 className="text-xs font-bold text-[#94a3b8] uppercase tracking-wider mb-3">Home Team</h3>
                 <div className="space-y-3">
+                  <label htmlFor="team-a-name" className="sr-only">Home Team Name</label>
                   <input
+                    id="team-a-name"
                     type="text"
                     value={state.teamA_name}
                     onChange={(e) => setState(s => ({ ...s, teamA_name: e.target.value }))}
@@ -233,7 +243,9 @@ export const Temp2Dashboard: React.FC<Temp2DashboardProps> = ({
                     className="w-full bg-[#1a1f2e] border border-[#1e293b] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#3b82f6] transition-all"
                   />
                   <div className="flex gap-3">
+                    <label htmlFor="team-a-abbr" className="sr-only">Home Team Code</label>
                     <input
+                      id="team-a-abbr"
                       type="text"
                       value={state.teamA_abbr}
                       onChange={(e) => setState(s => ({ ...s, teamA_abbr: e.target.value }))}
@@ -254,7 +266,9 @@ export const Temp2Dashboard: React.FC<Temp2DashboardProps> = ({
               <div>
                 <h3 className="text-xs font-bold text-[#94a3b8] uppercase tracking-wider mb-3">Away Team</h3>
                 <div className="space-y-3">
+                  <label htmlFor="team-b-name" className="sr-only">Away Team Name</label>
                   <input
+                    id="team-b-name"
                     type="text"
                     value={state.teamB_name}
                     onChange={(e) => setState(s => ({ ...s, teamB_name: e.target.value }))}
@@ -262,7 +276,9 @@ export const Temp2Dashboard: React.FC<Temp2DashboardProps> = ({
                     className="w-full bg-[#1a1f2e] border border-[#1e293b] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#3b82f6] transition-all"
                   />
                   <div className="flex gap-3">
+                    <label htmlFor="team-b-abbr" className="sr-only">Away Team Code</label>
                     <input
+                      id="team-b-abbr"
                       type="text"
                       value={state.teamB_abbr}
                       onChange={(e) => setState(s => ({ ...s, teamB_abbr: e.target.value }))}
@@ -360,11 +376,15 @@ export const Temp2Dashboard: React.FC<Temp2DashboardProps> = ({
               ))}
             </div>
             <div className="mt-4">
-              <label className="text-xs font-bold text-[#94a3b8] uppercase tracking-wider mb-2 block">
+              <label 
+                htmlFor="current-minute"
+                className="text-xs font-bold text-[#94a3b8] uppercase tracking-wider mb-2 block"
+              >
                 Current Minute
               </label>
               <div className="flex gap-2">
                 <input
+                  id="current-minute"
                   type="text"
                   value={state.match_time}
                   onChange={(e) => setState(s => ({ ...s, match_time: e.target.value }))}
@@ -432,6 +452,7 @@ export const Temp2Dashboard: React.FC<Temp2DashboardProps> = ({
                   value={eventPlayer}
                   onChange={(e) => setEventPlayer(e.target.value)}
                   placeholder="Player name"
+                  aria-label="Player name"
                   className="bg-[#1a1f2e] border border-[#1e293b] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#3b82f6] transition-all"
                 />
                 <input
@@ -439,6 +460,7 @@ export const Temp2Dashboard: React.FC<Temp2DashboardProps> = ({
                   value={eventMin}
                   onChange={(e) => setEventMin(e.target.value)}
                   placeholder="Min"
+                  aria-label="Event minute"
                   className="bg-[#1a1f2e] border border-[#1e293b] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#3b82f6] transition-all"
                 />
               </div>

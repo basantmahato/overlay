@@ -9,6 +9,7 @@ import { NewOverlayModal } from '@/components/dashboard/overlay/modals/NewOverla
 import { useRouter } from 'next/navigation';
 
 import { Template } from '@/types';
+import { getAllTemplates } from '@/lib/templateRegistry';
 
 export default function TemplatesPage() {
   const [templates, setTemplates] = useState<Template[]>([]);
@@ -32,7 +33,17 @@ export default function TemplatesPage() {
     })();
   }, []);
 
-  const getThumb = () => '/temp2_thumb.png';
+  const getThumb = (id: string) => {
+    if (id === 'broadcast-pro-football-id') return '/temp2_thumb.png';
+    if (id === 'basketball-pro-id') return '/temp3_thumb.png';
+    if (id === 'tennis-pro-id') return '/temp4_thumb.png';
+    return '/temp2_thumb.png';
+  };
+
+  const getDesc = (id: string) => {
+    const meta = getAllTemplates().find(m => m.id === id);
+    return meta?.description || 'Professional broadcast overlay.';
+  };
 
   const handleCreateClick = (id: string) => {
     setNewTemplateId(id);
@@ -69,10 +80,10 @@ export default function TemplatesPage() {
           >
             <div className="relative h-48 w-full bg-zinc-950">
               <Image 
-                src={getThumb()} 
+                src={getThumb(t.id)} 
                 alt={t.name}
                 fill
-                className="object-cover opacity-50 group-hover:opacity-80 transition-opacity"
+                className="object-cover opacity-60 group-hover:opacity-100 transition-opacity"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent" />
               <div className="absolute bottom-4 left-6">
@@ -84,7 +95,7 @@ export default function TemplatesPage() {
             </div>
             <div className="p-6">
               <p className="text-sm text-zinc-400 mb-6 leading-relaxed">
-                A high-fidelity glassmorphism overlay designed for professional football/soccer broadcasts. Includes competition and venue markers.
+                {getDesc(t.id)}
               </p>
               <Button onClick={() => handleCreateClick(t.id)} className="w-full py-3 rounded-xl">
                 <Plus size={16} /> Use Template

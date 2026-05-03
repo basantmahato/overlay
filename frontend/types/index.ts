@@ -40,6 +40,19 @@ export interface MatchState {
   possession_A?: number; // Percentage 0-100
   // Event Display Settings
   eventDisplayMinutes?: number; // How long events show in ticker (default 1 min)
+  
+  // Tennis specific
+  homeSets?: number;
+  awaySets?: number;
+  homeGames?: number;
+  awayGames?: number;
+  server?: 'home' | 'away';
+  surface?: string;
+  round?: string;
+
+  // Basketball specific
+  period?: number;
+  shotClock?: number;
 }
 
 export interface Template {
