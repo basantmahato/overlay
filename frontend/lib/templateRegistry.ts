@@ -2,13 +2,13 @@ import { ComponentType } from 'react';
 import { MatchState } from '@/types';
 
 // Import temp1 (Broadcast Pro Football Modern)
-import {
-  Temp1Dashboard,
-  Temp1Overlay,
-  Temp1Meta,
-  Temp1DashboardProps,
-  Temp1OverlayProps,
-} from '@/components/template/temp1';
+// import {
+//   Temp1Dashboard,
+//   Temp1Overlay,
+//   Temp1Meta,
+//   Temp1DashboardProps,
+//   Temp1OverlayProps,
+// } from '@/components/template/temp1';
 
 // Import temp2 (Broadcast Pro Football)
 import {
@@ -52,11 +52,11 @@ export interface TemplateEntry {
 
 // Template Registry - maps template IDs to their components
 export const templateRegistry: Record<string, TemplateEntry> = {
-  [Temp1Meta.id]: {
-    meta: Temp1Meta,
-    dashboard: Temp1Dashboard as ComponentType<DashboardProps>,
-    overlay: Temp1Overlay as ComponentType<OverlayProps>,
-  },
+  // [Temp1Meta.id]: {
+  //   meta: Temp1Meta,
+  //   dashboard: Temp1Dashboard as ComponentType<DashboardProps>,
+  //   overlay: Temp1Overlay as ComponentType<OverlayProps>,
+  // },
   [Temp2Meta.id]: {
     meta: Temp2Meta,
     dashboard: Temp2Dashboard as ComponentType<DashboardProps>,
