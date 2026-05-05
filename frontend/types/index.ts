@@ -6,58 +6,22 @@ export interface MatchEvent {
   timestamp?: number; // Unix timestamp when event was added
 }
 
-export interface MatchState {
-  teamA_name: string;
-  teamA_abbr: string;
-  teamA_color: string;
-  teamA_score: number;
-  teamB_name: string;
-  teamB_abbr: string;
-  teamB_color: string;
-  teamB_score: number;
-  match_time: string;
-  match_phase: string;
-  match_date?: string;
-  kickoff_time?: string;
-  play_clock: number;
-  down_distance: string;
-  possession: string;
-  competition?: string;
-  venue?: string;
-  event?: { text: string; timestamp: number } | null;
-  events?: MatchEvent[];
-  teamA_players?: string[];
-  teamB_players?: string[];
-  // Match Statistics
-  teamA_shots?: number;
-  teamA_shots_on_target?: number;
-  teamA_corners?: number;
-  teamA_fouls?: number;
-  teamB_shots?: number;
-  teamB_shots_on_target?: number;
-  teamB_corners?: number;
-  teamB_fouls?: number;
-  possession_A?: number; // Percentage 0-100
-  // Event Display Settings
-  eventDisplayMinutes?: number; // How long events show in ticker (default 1 min)
-  
-  // Tennis specific
-  homeSets?: number;
-  awaySets?: number;
-  homeGames?: number;
-  awayGames?: number;
-  server?: 'home' | 'away';
-  surface?: string;
-  round?: string;
+// Flexible MatchState - templates can have any fields
+export type MatchState = Record<string, any>;
 
-  // Basketball specific
-  period?: number;
-  shotClock?: number;
+// Template configuration from backend
+export interface TemplateConfig {
+  sport: string;
+  category: string;
+  defaultState: MatchState;
+  dashboardComponent: string;
+  overlayComponent: string;
 }
 
 export interface Template {
   id: string;
   name: string;
+  configJson?: TemplateConfig;
 }
 
 export interface Overlay {
@@ -66,4 +30,20 @@ export interface Overlay {
   isActive: boolean;
   renderedConfigJson: MatchState;
   template: Template;
+}
+
+// Dashboard component props
+export interface DashboardProps {
+  state: MatchState;
+  setState: React.Dispatch<React.SetStateAction<MatchState>>;
+  onPush: (patch: Partial<MatchState>) => void;
+  obsUrl: string;
+  onBack: () => void;
+}
+
+// Overlay component props
+export interface OverlayProps {
+  state: MatchState;
+  bumpA?: boolean;
+  bumpB?: boolean;
 }

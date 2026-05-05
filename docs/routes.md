@@ -1,6 +1,15 @@
 # Backend API & Real-time Documentation
 
+> 📚 **Related Documentation:**
+> - [Backend Architecture](backend.md) - Project structure and features
+> - [Frontend Architecture](frontend.md) - Component registry and dynamic loading
+> - [Database Schema](schema.md) - Prisma models and relationships
+
 The backend is built with Express.js and Socket.io, providing a robust REST API under the `/api/v1` prefix and real-time state synchronization via WebSockets.
+
+## Template System Integration
+
+All overlay state endpoints work with the **template-driven default state** system. When an overlay is created, it inherits its `defaultState` from the template's `configJson`. See `backend.md` and `schema.md` for details on the scalable template architecture.
 
 ---
 

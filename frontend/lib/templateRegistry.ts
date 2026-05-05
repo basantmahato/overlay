@@ -1,6 +1,15 @@
 import { ComponentType } from 'react';
 import { MatchState } from '@/types';
 
+// Import temp1 (Broadcast Pro Football Modern)
+import {
+  Temp1Dashboard,
+  Temp1Overlay,
+  Temp1Meta,
+  Temp1DashboardProps,
+  Temp1OverlayProps,
+} from '@/components/template/temp1';
+
 // Import temp2 (Broadcast Pro Football)
 import {
   Temp2Dashboard,
@@ -9,24 +18,6 @@ import {
   Temp2DashboardProps,
   Temp2OverlayProps,
 } from '@/components/template/temp2';
-
-// Import temp3 (Basketball Pro)
-import {
-  Temp3Dashboard,
-  Temp3Overlay,
-  Temp3Meta,
-  Temp3DashboardProps,
-  Temp3OverlayProps,
-} from '@/components/template/temp3';
-
-// Import temp4 (Tennis Pro)
-import {
-  Temp4Dashboard,
-  Temp4Overlay,
-  Temp4Meta,
-  Temp4DashboardProps,
-  Temp4OverlayProps,
-} from '@/components/template/temp4';
 
 // Dashboard component props base type
 export interface DashboardProps {
@@ -61,21 +52,26 @@ export interface TemplateEntry {
 
 // Template Registry - maps template IDs to their components
 export const templateRegistry: Record<string, TemplateEntry> = {
+  [Temp1Meta.id]: {
+    meta: Temp1Meta,
+    dashboard: Temp1Dashboard as ComponentType<DashboardProps>,
+    overlay: Temp1Overlay as ComponentType<OverlayProps>,
+  },
   [Temp2Meta.id]: {
     meta: Temp2Meta,
     dashboard: Temp2Dashboard as ComponentType<DashboardProps>,
     overlay: Temp2Overlay as ComponentType<OverlayProps>,
   },
-  [Temp3Meta.id]: {
-    meta: Temp3Meta,
-    dashboard: Temp3Dashboard as ComponentType<DashboardProps>,
-    overlay: Temp3Overlay as ComponentType<OverlayProps>,
-  },
-  [Temp4Meta.id]: {
-    meta: Temp4Meta,
-    dashboard: Temp4Dashboard as ComponentType<DashboardProps>,
-    overlay: Temp4Overlay as ComponentType<OverlayProps>,
-  },
+  // [Temp3Meta.id]: {
+  //   meta: Temp3Meta,
+  //   dashboard: Temp3Dashboard as ComponentType<DashboardProps>,
+  //   overlay: Temp3Overlay as ComponentType<OverlayProps>,
+  // },
+  // [Temp4Meta.id]: {
+  //   meta: Temp4Meta,
+  //   dashboard: Temp4Dashboard as ComponentType<DashboardProps>,
+  //   overlay: Temp4Overlay as ComponentType<OverlayProps>,
+  // },
   // ═══════════════════════════════════════════════════════════════════════════════
   // ADD NEW TEMPLATES HERE
   // ═══════════════════════════════════════════════════════════════════════════════

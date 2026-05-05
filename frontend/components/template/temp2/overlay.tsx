@@ -3,6 +3,15 @@
 import React, { useEffect, useState } from 'react';
 import { MatchState } from '@/types';
 
+// Match Event interface
+interface MatchEvent {
+  type: string;
+  team: 'h' | 'a';
+  player: string;
+  min: string;
+  timestamp?: number;
+}
+
 // Helper functions for event popup
 const getEventClass = (text: string): string => {
   if (text.includes('Goal')) return 'goal';
@@ -71,7 +80,7 @@ export const Temp2Overlay: React.FC<Temp2OverlayProps> = ({ state, bumpA, bumpB 
       const cutoffTime = Date.now() - (displayMinutes * 60 * 1000);
       const events = state.events || [];
       // Keep events with no timestamp (backward compat) or recent ones
-      const recent = events.filter(e => !e.timestamp || e.timestamp >= cutoffTime);
+      const recent = events.filter((e: MatchEvent) => !e.timestamp || e.timestamp >= cutoffTime);
       setFilteredEvents(recent);
     };
 

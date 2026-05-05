@@ -6,14 +6,17 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
+
     "db:migrate": "npx prisma migrate dev",
+    "db:push": "npx prisma migrate push",
     "db:generate": "npx prisma generate",
-    "db:seed": "npx prisma db seed",
+    "db:reset": "npx prisma migrate reset",
     "db:studio": "npx prisma studio",
+
     "test": "echo \"Error: no test specified\" && exit 1",
     "seed:templates": "node prisma/seeds/templateSeed.js",
-    "seed:admin": "node prisma/seeds/dashadminseed.js",
-    "cleanup:templates": "node prisma/seeds/cleanupTemplates.js",
+    "seed:admin": "node prisma/seeds/adminseed.js",
+    "seed:users": "node prisma/seeds/userseed.js",
     "remove-all-templates": "node prisma/seeds/removeAllTemplates.seed.js"
 
   },

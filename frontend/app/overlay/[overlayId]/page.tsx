@@ -4,22 +4,23 @@ import { useEffect, useState, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import io, { Socket } from 'socket.io-client';
 import axios from 'axios';
-import { getTemplate } from '@/lib/templateRegistry';
+import { getOverlayComponent } from '@/lib/componentRegistry';
+import { MatchState } from '@/types';
 
 const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:5000';
 const API_BASE   = process.env.NEXT_PUBLIC_API_URL    || 'http://localhost:5000/api/v1';
 
 export default function OverlayPage() {
   const { overlayId } = useParams<{ overlayId: string }>();
-  const [state, setState]       = useState<any>(null);
-  const [templateId, setTemplateId] = useState<string>('');
+  const [state, setState] = useState<MatchState | null>(null);
+  const [template, setTemplate] = useState<any>(null);
   const [connected, setConnected] = useState(false);
   const [showEvent, setShowEvent] = useState(false);
   const [eventText, setEventText] = useState('');
   
   const eventTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const prevScoreA    = useRef(0);
-  const prevScoreB    = useRef(0);
+  const prevScoreA = useRef(0);
+  const prevScoreB = useRef(0);
   const [bumpA, setBumpA] = useState(false);
   const [bumpB, setBumpB] = useState(false);
 
@@ -28,7 +29,7 @@ export default function OverlayPage() {
     axios.get(`${API_BASE}/overlays/${overlayId}/state`)
       .then(r => {
         setState(r.data.state);
-        setTemplateId(r.data.template.id);
+        setTemplate(r.data.template);
       })
       .catch(() => {});
   }, [overlayId]);
@@ -39,9 +40,10 @@ export default function OverlayPage() {
     socket.on('connect',    () => { setConnected(true); socket.emit('joinOverlay', overlayId); });
     socket.on('disconnect', () => setConnected(false));
 
-    socket.on('stateUpdated', (incoming: any) => {
-      setState((prev: any) => {
+    socket.on('stateUpdated', (incoming: MatchState) => {
+      setState((prev: MatchState | null) => {
         const next = { ...(prev ?? {}), ...incoming };
+        // Check for score changes (works with any template's score field)
         if (incoming.teamA_score !== undefined && incoming.teamA_score !== prevScoreA.current) {
           prevScoreA.current = incoming.teamA_score;
           setBumpA(true); setTimeout(() => setBumpA(false), 400);
@@ -63,24 +65,27 @@ export default function OverlayPage() {
     return () => { socket.disconnect(); };
   }, [overlayId]);
 
-  if (!state) return null;
+  if (!template || !state) return null;
 
   // ── Template Rendering ─────────────────────────────────────────────────
   const renderLayout = () => {
-    const templateEntry = getTemplate(templateId);
-    
-    if (!templateEntry) {
+    // Get overlay component name from template config
+    const overlayComponentName = template.configJson?.overlayComponent;
+    const OverlayComponent = overlayComponentName
+      ? getOverlayComponent(overlayComponentName)
+      : undefined;
+
+    if (!OverlayComponent) {
       return (
         <div className="fixed inset-0 flex items-center justify-center text-red-400">
           <div className="text-center">
-            <p className="font-bold">Unknown Template</p>
-            <p className="text-sm text-zinc-500">{templateId}</p>
+            <p className="font-bold">Overlay Not Found</p>
+            <p className="text-sm text-zinc-500">{overlayComponentName || 'undefined'}</p>
           </div>
         </div>
       );
     }
-    
-    const OverlayComponent = templateEntry.overlay;
+
     return <OverlayComponent state={state} bumpA={bumpA} bumpB={bumpB} />;
   };
 

@@ -1,6 +1,15 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+
+// Match Event interface
+interface MatchEvent {
+  type: string;
+  team: 'h' | 'a';
+  player: string;
+  min: string;
+  timestamp?: number;
+}
 import { 
   Info, Users, Target, Play, Pause, Plus, X, Copy, RefreshCw, 
   ChevronLeft, Trophy, Goal, Square, ArrowLeftRight
@@ -237,7 +246,7 @@ export const Temp2Dashboard: React.FC<Temp2DashboardProps> = ({
                   <input
                     id="team-a-name"
                     type="text"
-                    value={state.teamA_name}
+                    value={state.teamA_name || ''}
                     onChange={(e) => setState(s => ({ ...s, teamA_name: e.target.value }))}
                     placeholder="Team Name"
                     className="w-full bg-[#1a1f2e] border border-[#1e293b] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#3b82f6] transition-all"
@@ -247,14 +256,14 @@ export const Temp2Dashboard: React.FC<Temp2DashboardProps> = ({
                     <input
                       id="team-a-abbr"
                       type="text"
-                      value={state.teamA_abbr}
+                      value={state.teamA_abbr || ''}
                       onChange={(e) => setState(s => ({ ...s, teamA_abbr: e.target.value }))}
                       placeholder="Code"
                       className="w-20 bg-[#1a1f2e] border border-[#1e293b] rounded-xl px-3 py-3 text-sm text-center focus:outline-none focus:border-[#3b82f6] transition-all"
                     />
                     <input
                       type="color"
-                      value={state.teamA_color}
+                      value={state.teamA_color || '#3b82f6'}
                       onChange={(e) => setState(s => ({ ...s, teamA_color: e.target.value }))}
                       aria-label="Home team color"
                       className="w-14 h-12 bg-[#1a1f2e] border border-[#1e293b] rounded-xl cursor-pointer p-1"
@@ -270,7 +279,7 @@ export const Temp2Dashboard: React.FC<Temp2DashboardProps> = ({
                   <input
                     id="team-b-name"
                     type="text"
-                    value={state.teamB_name}
+                    value={state.teamB_name || ''}
                     onChange={(e) => setState(s => ({ ...s, teamB_name: e.target.value }))}
                     placeholder="Team Name"
                     className="w-full bg-[#1a1f2e] border border-[#1e293b] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#3b82f6] transition-all"
@@ -280,14 +289,14 @@ export const Temp2Dashboard: React.FC<Temp2DashboardProps> = ({
                     <input
                       id="team-b-abbr"
                       type="text"
-                      value={state.teamB_abbr}
+                      value={state.teamB_abbr || ''}
                       onChange={(e) => setState(s => ({ ...s, teamB_abbr: e.target.value }))}
                       placeholder="Code"
                       className="w-20 bg-[#1a1f2e] border border-[#1e293b] rounded-xl px-3 py-3 text-sm text-center focus:outline-none focus:border-[#3b82f6] transition-all"
                     />
                     <input
                       type="color"
-                      value={state.teamB_color}
+                      value={state.teamB_color || '#e63946'}
                       onChange={(e) => setState(s => ({ ...s, teamB_color: e.target.value }))}
                       aria-label="Away team color"
                       className="w-14 h-12 bg-[#1a1f2e] border border-[#1e293b] rounded-xl cursor-pointer p-1"
@@ -473,7 +482,7 @@ export const Temp2Dashboard: React.FC<Temp2DashboardProps> = ({
             </div>
             {/* Events List */}
             <div className="mt-4 space-y-2 max-h-32 overflow-y-auto">
-              {(state.events || []).slice().reverse().map((evt, i) => (
+              {(state.events || []).slice().reverse().map((evt: MatchEvent, i: number) => (
                 <div key={i} className="flex items-center gap-2 bg-[#1a1f2e]/50 rounded-lg px-3 py-2 text-xs group hover:bg-[#1a1f2e] transition-colors">
                   <EventIcon type={evt.type} size={14} />
                   <span className={`font-bold ${evt.team === 'h' ? 'text-[#3b82f6]' : 'text-[#e63946]'}`}>

@@ -1,18 +1,16 @@
 const prisma = require('../config/prisma');
 
-// Default live match state shape
-const defaultMatchState = {
+// Fallback default state if template has no config
+const fallbackDefaultState = {
   teamA_name: 'HOME',
   teamA_score: 0,
   teamB_name: 'AWAY',
   teamB_score: 0,
-  match_time: '15:00',
-  match_phase: '1st',
-  play_clock: 40,
-  down_distance: '1st & 10',
-  possession: 'A', // 'A' = home has ball, 'B' = away has ball
-  isRunning: false,
-  event: null,    // { text: 'TOUCHDOWN!', timestamp: ... }
+};
+
+// Helper to get template's default state
+const getTemplateDefaultState = (template) => {
+  return template?.configJson?.defaultState || fallbackDefaultState;
 };
 
 // @desc    Get all overlays for the logged-in user
@@ -57,13 +55,17 @@ const getOverlayState = async (req, res) => {
     return res.status(404).json({ message: 'Overlay not found' });
   }
 
-  // Return current rendered config (live match state) AND template info
-  const state = overlay.renderedConfigJson || defaultMatchState;
+  // Merge template defaults with saved state
+  const templateDefaults = getTemplateDefaultState(overlay.template);
+  const savedState = overlay.renderedConfigJson || {};
+  const mergedState = { ...templateDefaults, ...savedState };
+
   res.json({
-    state,
+    state: mergedState,
     template: {
       id: overlay.template.id,
-      name: overlay.template.name
+      name: overlay.template.name,
+      configJson: overlay.template.configJson,
     }
   });
 };
@@ -85,13 +87,16 @@ const createOverlay = async (req, res) => {
     throw new Error('Template not found');
   }
 
+  // Use template-specific default state
+  const defaultState = getTemplateDefaultState(template);
+
   const overlay = await prisma.overlay.create({
     data: {
       name,
       userId: req.user.id,
       templateId,
       customSettingsJson: customSettingsJson || {},
-      renderedConfigJson: defaultMatchState,
+      renderedConfigJson: defaultState,
     },
     include: { template: true },
   });
@@ -129,10 +134,11 @@ const updateOverlay = async (req, res) => {
 
 // @desc    Update live match state and broadcast via Socket.io
 // @route   PATCH /api/v1/overlays/:id/state
-// @access  Private
+// @access   Private
 const updateOverlayState = async (req, res) => {
   const overlay = await prisma.overlay.findFirst({
     where: { id: req.params.id, userId: req.user.id },
+    include: { template: true },
   });
 
   if (!overlay) {
@@ -141,7 +147,8 @@ const updateOverlayState = async (req, res) => {
   }
 
   // Merge incoming partial state over existing state
-  const currentState = overlay.renderedConfigJson || defaultMatchState;
+  const templateDefaults = getTemplateDefaultState(overlay.template);
+  const currentState = overlay.renderedConfigJson || templateDefaults;
   const newState = { ...currentState, ...req.body };
 
   const updated = await prisma.overlay.update({

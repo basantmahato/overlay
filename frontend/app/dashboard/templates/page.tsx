@@ -9,7 +9,6 @@ import { NewOverlayModal } from '@/components/dashboard/overlay/modals/NewOverla
 import { useRouter } from 'next/navigation';
 
 import { Template } from '@/types';
-import { getAllTemplates } from '@/lib/templateRegistry';
 
 export default function TemplatesPage() {
   const [templates, setTemplates] = useState<Template[]>([]);
@@ -34,15 +33,23 @@ export default function TemplatesPage() {
   }, []);
 
   const getThumb = (id: string) => {
+    // New scalable template IDs
+    if (id === 'football-broadcast-pro') return '/temp2_thumb.png';
+    if (id === 'football-modern-glass') return '/temp1_thumb.png';
+    if (id === 'basketball-modern') return '/temp3_thumb.png';
+    if (id === 'basketball-classic') return '/temp3_thumb.png';
+    if (id === 'tennis-scoreboard') return '/temp4_thumb.png';
+    if (id === 'cricket-t20') return '/temp2_thumb.png';
+    // Legacy IDs (backwards compatibility)
+    if (id === 'broadcast-pro-football-modern-id') return '/temp1_thumb.png';
     if (id === 'broadcast-pro-football-id') return '/temp2_thumb.png';
-    if (id === 'basketball-pro-id') return '/temp3_thumb.png';
-    if (id === 'tennis-pro-id') return '/temp4_thumb.png';
     return '/temp2_thumb.png';
   };
 
-  const getDesc = (id: string) => {
-    const meta = getAllTemplates().find(m => m.id === id);
-    return meta?.description || 'Professional broadcast overlay.';
+  const getDesc = (template: Template) => {
+    return template.configJson?.sport 
+      ? `Professional ${template.configJson.sport} broadcast overlay.`
+      : 'Professional broadcast overlay.';
   };
 
   const handleCreateClick = (id: string) => {
@@ -95,7 +102,7 @@ export default function TemplatesPage() {
             </div>
             <div className="p-6">
               <p className="text-sm text-zinc-400 mb-6 leading-relaxed">
-                {getDesc(t.id)}
+                {getDesc(t)}
               </p>
               <Button onClick={() => handleCreateClick(t.id)} className="w-full py-3 rounded-xl">
                 <Plus size={16} /> Use Template

@@ -4,25 +4,12 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import io, { Socket } from 'socket.io-client';
 import api from '@/lib/api';
 import { NewOverlayModal } from '@/components/dashboard/overlay/modals/NewOverlayModal';
-import { getTemplate, DashboardProps } from '@/lib/templateRegistry';
+import { getDashboardComponent } from '@/lib/componentRegistry';
 import { Pencil, Trash2, Check, X } from 'lucide-react';
 
 import { MatchState, Overlay, Template } from '@/types';
 
 const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:5000';
-
-const DEFAULT_STATE: MatchState = {
-  teamA_name: 'HOME', teamA_abbr: 'HOME', teamA_color: '#3b82f6', teamA_score: 0,
-  teamB_name: 'AWAY', teamB_abbr: 'AWAY', teamB_color: '#ef4444', teamB_score: 0,
-  match_time: '15:00', match_phase: '1st',
-  play_clock: 40, down_distance: '1st & 10',
-  possession: 'A', event: null,
-  competition: '', venue: '',
-  // Stats
-  teamA_shots: 0, teamA_shots_on_target: 0, teamA_corners: 0, teamA_fouls: 0,
-  teamB_shots: 0, teamB_shots_on_target: 0, teamB_corners: 0, teamB_fouls: 0,
-  possession_A: 50,
-};
 
 export default function OverlaysPage() {
   const socketRef = useRef<Socket | null>(null);
@@ -30,7 +17,7 @@ export default function OverlaysPage() {
   const [overlays, setOverlays]       = useState<Overlay[]>([]);
   const [templates, setTemplates]     = useState<Template[]>([]);
   const [activeId, setActiveId]       = useState<string | null>(null);
-  const [state, setState]             = useState<MatchState>(DEFAULT_STATE);
+  const [state, setState]             = useState<MatchState>({});
   const [loading, setLoading]         = useState(true);
   const [showNewModal, setShowNewModal] = useState(false);
   const [newName, setNewName]         = useState('');
@@ -50,10 +37,17 @@ export default function OverlaysPage() {
 
   const joinDashboard = (id: string) => socketRef.current?.emit('joinDashboard', id);
 
-  const selectOverlay = (ov: Overlay) => {
+  const selectOverlay = async (ov: Overlay) => {
     setActiveId(ov.id);
-    setState(ov.renderedConfigJson ?? DEFAULT_STATE);
     joinDashboard(ov.id);
+    
+    // Fetch latest state from server (includes template defaults merged with saved state)
+    try {
+      const res = await api.get(`/overlays/${ov.id}/state`);
+      setState(res.data.state);
+    } catch {
+      setState(ov.renderedConfigJson || {});
+    }
   };
 
   // ── Data load ────────────────────────────────────────────────────────────────
@@ -136,30 +130,32 @@ export default function OverlaysPage() {
 
   // Show template-specific dashboard
   if (activeOverlay) {
-    const templateEntry = getTemplate(activeOverlay.template.id);
-    
-    if (!templateEntry) {
+    // Get dashboard component name from template config
+    const dashboardComponentName = activeOverlay.template.configJson?.dashboardComponent;
+    const DashboardComponent = dashboardComponentName 
+      ? getDashboardComponent(dashboardComponentName)
+      : undefined;
+
+    if (!DashboardComponent) {
       return (
         <div className="p-6">
           <button onClick={() => setActiveId(null)} className="text-zinc-400 hover:text-white mb-4">
             ← Back
           </button>
           <div className="bg-red-900/20 border border-red-800 rounded-xl p-6 text-red-400">
-            <h2 className="font-bold mb-2">Template Not Found</h2>
-            <p className="text-sm">Template &quot;{activeOverlay.template.name}&quot; (ID: {activeOverlay.template.id}) is not registered.</p>
+            <h2 className="font-bold mb-2">Dashboard Not Found</h2>
+            <p className="text-sm">Dashboard component &quot;{dashboardComponentName || 'undefined'}&quot; is not registered for template &quot;{activeOverlay.template.name}&quot;.</p>
           </div>
         </div>
       );
     }
-    
-    const DashboardComponent = templateEntry.dashboard;
-    
+
     return (
-      <DashboardComponent 
-        state={state} 
-        setState={setState} 
-        onPush={push} 
-        obsUrl={obsUrl} 
+      <DashboardComponent
+        state={state}
+        setState={setState}
+        onPush={push}
+        obsUrl={obsUrl}
         onBack={() => setActiveId(null)}
       />
     );

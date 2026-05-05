@@ -28,8 +28,6 @@ model Template {
   createdAt  DateTime @default(now())
 
   overlays   Overlay[]
-  categoryId String?
-  category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
 
   @@map("templates")
 }
@@ -106,12 +104,4 @@ model Subscription {
   plan Plan @relation(fields: [planId], references: [id])
 
   @@map("subscriptions")
-}
-
-model Category {
-  id        String     @id @default(uuid())
-  name      String     @unique
-  templates Template[]
-
-  @@map("categories")
 }
