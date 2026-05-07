@@ -2,13 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Shield, Search, Trash2, 
-  Edit2, Plus, Key 
+  Edit2, Plus, Key, MoreHorizontal 
 } from 'lucide-react';
 import api from '../lib/api';
 
 export default function UserManagement() {
   const [users, setUsers] = useState<any[]>([]);
-  // loading state removed as it was unused
   const [showModal, setShowModal] = useState(false);
   const [editingUser, setEditingUser] = useState<any>(null);
   
@@ -22,7 +21,7 @@ export default function UserManagement() {
     try {
       const res = await api.get('/admin/users');
       setUsers(res.data);
-    } catch (e) {} finally { /* loading finish */ }
+    } catch (e) {}
   };
 
   useEffect(() => { fetchUsers(); }, []);
@@ -30,7 +29,6 @@ export default function UserManagement() {
   const handleSave = async () => {
     try {
       if (editingUser) {
-        // Only include password if it's being changed
         const payload = { 
           email: formData.email, 
           role: formData.role,
@@ -64,157 +62,173 @@ export default function UserManagement() {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="flex justify-between items-end">
+    <div className="max-w-6xl mx-auto space-y-8">
+      <div className="flex justify-between items-start">
         <div>
-          <h1 className="text-3xl font-bold">User Management</h1>
-          <p className="text-zinc-500 mt-1">Review registered broadcasters and manage permissions.</p>
+          <h1 className="text-2xl font-bold tracking-tight">Users</h1>
+          <p className="text-muted-foreground text-sm">Manage registered broadcasters and their system roles.</p>
         </div>
         <button 
           onClick={() => { setEditingUser(null); setFormData({ email: '', password: '', role: 'USER' }); setShowModal(true); }}
-          className="flex items-center gap-2 px-6 py-3 rounded-2xl premium-gradient text-white font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform"
+          className="shadcn-button bg-foreground text-background hover:bg-foreground/90 font-bold text-xs uppercase tracking-widest gap-2"
         >
-          <Plus size={20} />
+          <Plus size={14} />
           Create User
         </button>
       </div>
 
-      <div className="glass-card border-white/5 overflow-hidden">
-        <div className="p-6 border-b border-white/5 flex items-center justify-between gap-4">
-          <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" size={16} />
+      <div className="shadcn-card overflow-hidden">
+        <div className="p-4 border-b border-border flex items-center justify-between bg-secondary/20">
+          <div className="relative w-72">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={14} />
             <input 
               type="text" 
-              placeholder="Search users..."
-              className="w-full bg-white/5 border border-white/10 rounded-xl py-2 pl-10 pr-4 text-sm focus:outline-none"
+              placeholder="Filter users..."
+              className="shadcn-input pl-9 h-8 bg-background border-border"
             />
+          </div>
+          <div className="flex items-center gap-2">
+            <button className="shadcn-button h-8 px-2 border border-border text-muted-foreground hover:text-foreground">
+              <MoreHorizontal size={16} />
+            </button>
           </div>
         </div>
 
-        <table className="w-full text-left">
-          <thead>
-            <tr className="text-xs font-bold text-zinc-500 uppercase tracking-widest border-b border-white/5">
-              <th className="px-8 py-4 font-bold">User</th>
-              <th className="px-8 py-4 font-bold">Role</th>
-              <th className="px-8 py-4 font-bold">Joined</th>
-              <th className="px-8 py-4 font-bold">Overlays</th>
-              <th className="px-8 py-4 text-right font-bold">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-white/5">
-            {users.map((u) => (
-              <tr key={u.id} className="hover:bg-white/[0.02] transition-colors group">
-                <td className="px-8 py-5">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl premium-gradient flex items-center justify-center font-bold text-xs text-white">
-                      {u.email.substring(0, 2).toUpperCase()}
-                    </div>
-                    <div>
-                      <p className="font-bold">{u.email}</p>
-                      <p className="text-[10px] text-zinc-500 font-mono">{u.id}</p>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-8 py-5">
-                  <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter ${u.role === 'ADMIN' ? 'bg-indigo-500/10 text-indigo-400' : 'bg-zinc-500/10 text-zinc-500'}`}>
-                    {u.role === 'ADMIN' && <Shield size={10} />}
-                    {u.role}
-                  </span>
-                </td>
-                <td className="px-8 py-5 text-sm text-zinc-500">
-                  {new Date(u.createdAt).toLocaleDateString()}
-                </td>
-                <td className="px-8 py-5 text-sm text-zinc-500 font-medium">
-                  {u._count?.overlays || 0} Created
-                </td>
-                <td className="px-8 py-5">
-                  <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button 
-                      title="Edit user" aria-label="Edit user"
-                      onClick={() => openEditModal(u)}
-                      className="p-2 hover:bg-white/5 rounded-lg text-zinc-400 hover:text-white transition-all"
-                    >
-                      <Edit2 size={18} />
-                    </button>
-                    <button 
-                      title="Delete user" aria-label="Delete user"
-                      onClick={() => deleteUser(u.id)}
-                      className="p-2 hover:bg-red-500/10 rounded-lg text-zinc-400 hover:text-red-400 transition-all"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest border-b border-border bg-secondary/10">
+                <th className="px-6 py-3 font-bold">Account</th>
+                <th className="px-6 py-3 font-bold">Role</th>
+                <th className="px-6 py-3 font-bold">Created</th>
+                <th className="px-6 py-3 font-bold text-center">Resources</th>
+                <th className="px-6 py-3 text-right font-bold">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-border">
+              {users.map((u) => (
+                <tr key={u.id} className="hover:bg-secondary/20 transition-colors group">
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded border border-border bg-background flex items-center justify-center font-bold text-[10px] text-foreground">
+                        {u.email.substring(0, 2).toUpperCase()}
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium">{u.email}</p>
+                        <p className="text-[10px] text-muted-foreground font-mono">{u.id}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-tight border ${u.role === 'ADMIN' ? 'border-foreground text-foreground bg-foreground/10' : 'border-border text-muted-foreground bg-secondary/50'}`}>
+                      {u.role === 'ADMIN' && <Shield size={8} />}
+                      {u.role}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-xs text-muted-foreground">
+                    {new Date(u.createdAt).toLocaleDateString()}
+                  </td>
+                  <td className="px-6 py-4 text-xs text-center font-medium">
+                    <span className="text-foreground">{u._count?.overlays || 0}</span>
+                    <span className="text-muted-foreground text-[10px] ml-1 uppercase">overlays</span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button 
+                        title="Edit user"
+                        onClick={() => openEditModal(u)}
+                        className="p-1.5 hover:bg-secondary rounded border border-transparent hover:border-border text-muted-foreground hover:text-foreground transition-all"
+                      >
+                        <Edit2 size={14} />
+                      </button>
+                      <button 
+                        title="Delete user"
+                        onClick={() => deleteUser(u.id)}
+                        className="p-1.5 hover:bg-destructive/10 rounded border border-transparent hover:border-destructive/20 text-muted-foreground hover:text-destructive transition-all"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* User Modal */}
       <AnimatePresence>
         {showModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModal(false)} className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModal(false)} className="absolute inset-0 bg-background/80 backdrop-blur-sm" />
             <motion.div 
-              initial={{ scale: 0.95, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.95, opacity: 0, y: 20 }}
-              className="glass-card w-full max-w-md p-8 border-white/10 z-10"
+              initial={{ scale: 0.98, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.98, opacity: 0 }}
+              className="shadcn-card w-full max-w-md p-6 z-10"
             >
-              <h2 className="text-2xl font-bold mb-6">{editingUser ? 'Edit User' : 'Create New User'}</h2>
+              <div className="flex flex-col gap-1 mb-6">
+                <h2 className="text-lg font-bold tracking-tight">{editingUser ? 'Edit User' : 'Create Account'}</h2>
+                <p className="text-xs text-muted-foreground">Configure system access and permissions.</p>
+              </div>
               
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">Email Address</label>
+              <div className="space-y-4">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">Email Address</label>
                   <input 
                     type="email" 
                     value={formData.email}
                     onChange={(e) => setFormData({...formData, email: e.target.value})}
                     placeholder="user@example.com"
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:border-primary/50"
+                    className="shadcn-input h-10"
                   />
                 </div>
                 
-                <div>
-                  <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2 flex items-center justify-between">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1 flex items-center justify-between">
                     {editingUser ? 'New Password (optional)' : 'Password'}
-                    <Key size={14} className="text-zinc-600" />
+                    <Key size={10} />
                   </label>
                   <input 
                     type="password" 
                     value={formData.password}
                     onChange={(e) => setFormData({...formData, password: e.target.value})}
                     placeholder={editingUser ? "••••••••" : "Set password"}
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:border-primary/50"
+                    className="shadcn-input h-10"
                   />
                 </div>
 
-                <div>
-                  <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">System Role</label>
-                  <select 
-                    title="System Role" aria-label="System Role"
-                    value={formData.role}
-                    onChange={(e) => setFormData({...formData, role: e.target.value})}
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3 text-sm focus:outline-none focus:border-primary/50 appearance-none"
-                  >
-                    <option value="USER" className="bg-bg-dark">Standard User</option>
-                    <option value="ADMIN" className="bg-bg-dark">Administrator</option>
-                  </select>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">System Role</label>
+                  <div className="relative">
+                    <select 
+                      title="System Role"
+                      value={formData.role}
+                      onChange={(e) => setFormData({...formData, role: e.target.value})}
+                      className="shadcn-input h-10 appearance-none bg-background cursor-pointer"
+                    >
+                      <option value="USER">Standard User</option>
+                      <option value="ADMIN">Administrator</option>
+                    </select>
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
+                      <MoreHorizontal size={14} className="rotate-90" />
+                    </div>
+                  </div>
                 </div>
 
-                <div className="flex gap-3 pt-4">
+                <div className="flex gap-2 pt-4">
                   <button 
                     onClick={() => setShowModal(false)}
-                    className="flex-1 py-4 rounded-2xl bg-white/5 border border-white/10 text-zinc-400 font-bold hover:bg-white/10"
+                    className="flex-1 shadcn-button border border-border text-foreground hover:bg-secondary text-xs uppercase font-bold tracking-widest"
                   >
                     Cancel
                   </button>
                   <button 
                     onClick={handleSave}
-                    className="flex-1 py-4 rounded-2xl premium-gradient text-white font-bold shadow-lg shadow-primary/20"
+                    className="flex-1 shadcn-button bg-foreground text-background hover:bg-foreground/90 text-xs uppercase font-bold tracking-widest"
                   >
-                    {editingUser ? 'Update User' : 'Create User'}
+                    {editingUser ? 'Save Changes' : 'Create User'}
                   </button>
                 </div>
               </div>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Tv } from 'lucide-react';
 import api from '../lib/api';
 
 export default function AdminLogin() {
@@ -17,8 +17,6 @@ export default function AdminLogin() {
     setError('');
     try {
       const res = await api.post('/auth/login', { email, password });
-      // In a real app, we should check if res.data.user.role === 'ADMIN'
-      // But for now we just save the token
       localStorage.setItem('adminToken', res.data.accessToken);
       navigate('/');
     } catch (err: any) {
@@ -29,61 +27,67 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-bg-dark relative overflow-hidden">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/10 blur-[120px] rounded-full" />
-      
+    <div className="min-h-screen flex items-center justify-center bg-background relative px-4">
       <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-md p-10 glass-card border-white/5 relative z-10"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="w-full max-w-sm"
       >
-       
-
-        {error && (
-          <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm font-medium text-center">
-            {error}
+        <div className="flex flex-col items-center gap-4 mb-8">
+          <div className="w-12 h-12 bg-foreground rounded-lg flex items-center justify-center">
+            <Tv className="text-background" size={24} />
           </div>
-        )}
-
-        <form onSubmit={handleLogin} className="space-y-6">
-          <div>
-            <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">Email Address</label>
-            <input 
-              type="email" 
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-sm focus:outline-none focus:border-primary/50 transition-all"
-              placeholder="admin@overlay.io"
-              required
-            />
+          <div className="text-center">
+            <h1 className="text-xl font-bold tracking-tight">Overlay Admin</h1>
+            <p className="text-sm text-muted-foreground mt-1">Enter your credentials to continue</p>
           </div>
-          <div>
-            <label className="block text-xs font-bold text-zinc-500 uppercase tracking-widest mb-2">Password</label>
-            <input 
-              type="password" 
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-sm focus:outline-none focus:border-primary/50 transition-all"
-              placeholder="••••••••"
-              required
-            />
-          </div>
-
-          <button 
-            type="submit"
-            disabled={loading}
-            className="w-full py-4 rounded-2xl premium-gradient text-white font-bold shadow-lg shadow-primary/20 flex items-center justify-center gap-2 group disabled:opacity-50"
-          >
-            {loading ? 'Authenticating...' : 'Sign In to Dashboard'}
-            {!loading && <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />}
-          </button>
-        </form>
-
-        <div className="mt-8 text-center">
-          <p className="text-xs text-zinc-600">
-            Secure administration for Overlay.io systems.
-          </p>
         </div>
+
+        <div className="shadcn-card p-6">
+          {error && (
+            <div className="mb-4 p-3 rounded border border-destructive/20 bg-destructive/10 text-destructive text-xs font-medium text-center">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">Email</label>
+              <input 
+                type="email" 
+                value={email}
+                onChange={e => setEmail(e.target.value)}
+                className="shadcn-input h-10"
+                placeholder="admin@example.com"
+                required
+              />
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest ml-1">Password</label>
+              <input 
+                type="password" 
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                className="shadcn-input h-10"
+                placeholder="••••••••"
+                required
+              />
+            </div>
+
+            <button 
+              type="submit"
+              disabled={loading}
+              className="w-full shadcn-button h-10 bg-foreground text-background hover:bg-foreground/90 font-bold text-xs uppercase tracking-widest flex items-center justify-center gap-2 group disabled:opacity-50 mt-2"
+            >
+              {loading ? 'Authenticating...' : 'Sign In'}
+              {!loading && <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />}
+            </button>
+          </form>
+        </div>
+
+        <p className="mt-8 text-center text-[10px] text-muted-foreground uppercase tracking-widest font-bold">
+          Protected Environment
+        </p>
       </motion.div>
     </div>
   );

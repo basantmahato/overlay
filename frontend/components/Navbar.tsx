@@ -2,39 +2,65 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Tv, LayoutDashboard } from 'lucide-react';
+import { Bell, ChevronDown } from 'lucide-react';
+
+const NavItem = ({ label, hasDropdown = true }: { label: string, hasDropdown?: boolean }) => (
+  <div className="flex items-center gap-1 cursor-pointer group">
+    <span className="text-[14px] font-medium text-zinc-600 group-hover:text-black transition-colors">
+      {label}
+    </span>
+    {hasDropdown && <ChevronDown size={14} className="text-zinc-400 group-hover:text-black transition-colors" />}
+  </div>
+);
 
 export default function Navbar() {
+  const [isScrolled, setIsScrolled] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     setIsLoggedIn(!!localStorage.getItem('accessToken'));
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
-    <nav className="fixed top-0 w-full z-50 glass border-b border-white/5">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <Link href="/" className="flex items-center gap-2 cursor-pointer">
-            <Tv className="text-indigo-500 w-8 h-8" />
-            <span className="text-xl font-bold tracking-tighter premium-text-gradient">
-              Overlay.io
+    <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white/90 backdrop-blur-md shadow-sm border-b border-zinc-100' : 'bg-white'}`}>
+      <div className="max-w-[1400px] mx-auto px-6 sm:px-10">
+        <div className="flex justify-between items-center h-[72px]">
+          {/* Logo Section */}
+          <Link href="/" className="flex items-center gap-2 cursor-pointer group">
+            <div className="relative w-7 h-7 bg-[#a3e635] rounded-md flex items-center justify-center overflow-hidden transition-transform group-hover:scale-105">
+              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-[#0f172a] rounded-full" />
+            </div>
+            <span className="text-xl font-bold tracking-tight text-[#0f172a]">
+              MAC
             </span>
           </Link>
           
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-zinc-400">
-            <Link href="#features" className="hover:text-white transition-colors">Features</Link>
-            <Link href="#templates" className="hover:text-white transition-colors">Templates</Link>
-            <Link href="#pricing" className="hover:text-white transition-colors">Pricing</Link>
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex items-center gap-8">
+            <NavItem label="Service" />
+            <NavItem label="Agency" />
+            <NavItem label="Case study" />
+            <NavItem label="Resources" />
+            <NavItem label="Contact" hasDropdown={false} />
           </div>
 
+          {/* Action Buttons */}
           <div className="flex items-center gap-4">
             <Link 
               href={isLoggedIn ? "/dashboard" : "/login"} 
-              className="px-5 py-2 rounded-full text-sm font-semibold bg-white text-black hover:bg-zinc-200 transition-all shadow-lg shadow-white/10 flex items-center gap-2"
+              className="px-6 py-2 rounded-full text-[14px] font-semibold border border-zinc-300 text-zinc-900 hover:bg-zinc-50 hover:border-zinc-400 transition-all"
             >
-              {isLoggedIn ? <><LayoutDashboard size={16} /> Dashboard</> : 'Sign In'}
+              {isLoggedIn ? 'Dashboard' : 'Sign In'}
             </Link>
+            
+            <button className="w-10 h-10 rounded-full bg-[#0f172a] flex items-center justify-center text-white hover:bg-black transition-all shadow-md">
+              <Bell size={18} />
+            </button>
           </div>
         </div>
       </div>

@@ -3,25 +3,24 @@ import { motion } from 'framer-motion';
 import { Users, Layout as TemplateIcon, Activity, ArrowUpRight, TrendingUp } from 'lucide-react';
 import api from '../lib/api';
 
-const StatCard = ({ label, value, icon: Icon, color, delay }: any) => (
+const StatCard = ({ label, value, icon: Icon, delay }: any) => (
   <motion.div 
-    initial={{ opacity: 0, y: 20 }}
+    initial={{ opacity: 0, y: 10 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay }}
-    className="glass-card p-6 border-white/5 flex flex-col gap-4"
+    className="shadcn-card p-6"
   >
     <div className="flex justify-between items-start">
-      <div className={`p-3 rounded-2xl ${color} bg-opacity-10 text-opacity-100`}>
-        <Icon size={24} className={color.replace('bg-', 'text-')} />
+      <div className="p-2 rounded-md bg-secondary text-secondary-foreground border border-border">
+        <Icon size={20} />
       </div>
-      <div className="flex items-center gap-1 text-emerald-500 text-xs font-bold">
-        <ArrowUpRight size={14} />
+      <div className="flex items-center gap-1 text-foreground text-[10px] font-bold border border-border px-1.5 py-0.5 rounded uppercase tracking-wider">
         +12%
       </div>
     </div>
-    <div>
-      <p className="text-zinc-500 text-sm font-semibold">{label}</p>
-      <h3 className="text-3xl font-bold mt-1">{value}</h3>
+    <div className="mt-4">
+      <p className="text-muted-foreground text-xs font-medium uppercase tracking-wider">{label}</p>
+      <h3 className="text-2xl font-bold mt-1 tabular-nums">{value}</h3>
     </div>
   </motion.div>
 );
@@ -40,41 +39,40 @@ export default function Dashboard() {
       });
     }).catch((error) => {
       console.error('Dashboard fetch error:', error);
-      console.error('Error details:', error.response?.data || error.message);
     });
   }, []);
 
   return (
-    <div className="space-y-8">
+    <div className="max-w-6xl mx-auto space-y-8">
       <div>
-        <h1 className="text-3xl font-bold">System Overview</h1>
-        <p className="text-zinc-500 mt-1">Global statistics and health monitoring.</p>
+        <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
+        <p className="text-muted-foreground text-sm">System performance and user engagement metrics.</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <StatCard label="Total Users" value={stats.users} icon={Users} color="bg-blue-500" delay={0.1} />
-        <StatCard label="Active Templates" value={stats.templates} icon={TemplateIcon} color="bg-purple-500" delay={0.2} />
-        <StatCard label="Daily Active Sessions" value="1,284" icon={Activity} color="bg-emerald-500" delay={0.3} />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <StatCard label="Total Users" value={stats.users} icon={Users} delay={0.1} />
+        <StatCard label="Active Templates" value={stats.templates} icon={TemplateIcon} delay={0.2} />
+        <StatCard label="Daily Sessions" value="1,284" icon={Activity} delay={0.3} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Recent Activity Mockup */}
-        <div className="lg:col-span-2 glass-card p-8 border-white/5">
-          <div className="flex justify-between items-center mb-8">
-            <h3 className="text-xl font-bold">Recent System Activity</h3>
-            <button className="text-xs font-bold text-primary hover:underline">View All Logs</button>
+        {/* Recent Activity */}
+        <div className="lg:col-span-2 shadcn-card overflow-hidden">
+          <div className="p-6 border-b border-border flex justify-between items-center">
+            <h3 className="text-sm font-bold uppercase tracking-wider">Recent Activity</h3>
+            <button className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors px-2 py-1 border border-border rounded">View All</button>
           </div>
-          <div className="space-y-6">
+          <div className="divide-y divide-border">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="flex items-center gap-4 group">
-                <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-zinc-500 group-hover:text-primary transition-colors">
-                  <TrendingUp size={18} />
+              <div key={i} className="p-4 flex items-center gap-4 hover:bg-secondary/30 transition-colors">
+                <div className="w-8 h-8 rounded border border-border bg-background flex items-center justify-center text-muted-foreground">
+                  <TrendingUp size={14} />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-semibold">New template "E-Sports Pro" published</p>
-                  <p className="text-xs text-zinc-500">2 minutes ago • System Admin</p>
+                  <p className="text-sm font-medium">New template "E-Sports Pro" published</p>
+                  <p className="text-xs text-muted-foreground">2 minutes ago • System Admin</p>
                 </div>
-                <div className="text-xs font-bold text-zinc-600 px-3 py-1 rounded-full border border-white/5">
+                <div className="text-[10px] font-bold text-foreground border border-border px-2 py-0.5 rounded bg-background">
                   SUCCESS
                 </div>
               </div>
@@ -83,14 +81,17 @@ export default function Dashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="glass-card p-8 border-white/5">
-          <h3 className="text-xl font-bold mb-8">Quick Actions</h3>
+        <div className="shadcn-card p-6">
+          <h3 className="text-sm font-bold uppercase tracking-wider mb-6">Quick Actions</h3>
           <div className="space-y-3">
-            <button className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 text-white font-bold hover:bg-white/10 transition-colors">
-              Broadcast System Message
+            <button className="w-full shadcn-button bg-foreground text-background hover:bg-foreground/90 font-bold text-xs uppercase tracking-widest">
+              Broadcast Message
             </button>
-            <button className="w-full py-4 rounded-2xl bg-white/5 border border-white/10 text-white font-bold hover:bg-white/10 transition-colors">
-              Server Maintenance Mode
+            <button className="w-full shadcn-button border border-border text-foreground hover:bg-secondary font-bold text-xs uppercase tracking-widest">
+              Maintenance Mode
+            </button>
+            <button className="w-full shadcn-button border border-border text-foreground hover:bg-secondary font-bold text-xs uppercase tracking-widest">
+              System Backup
             </button>
           </div>
         </div>

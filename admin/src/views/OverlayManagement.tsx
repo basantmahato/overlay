@@ -16,50 +16,51 @@ export default function OverlayManagement() {
   useEffect(() => { fetchOverlays(); }, []);
 
   return (
-    <div className="space-y-8">
+    <div className="max-w-6xl mx-auto space-y-8">
       <div>
-        <h1 className="text-3xl font-bold">Global Overlays</h1>
-        <p className="text-zinc-500 mt-1">Live overview of all broadcast overlays across the platform.</p>
+        <h1 className="text-2xl font-bold tracking-tight">Global Overlays</h1>
+        <p className="text-muted-foreground text-sm">Real-time overview of all broadcast instances across the platform.</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {overlays.map((ov) => (
-          <div key={ov.id} className="glass-card p-6 border-white/5 hover:border-primary/30 transition-all group">
-            <div className="flex justify-between items-start mb-6">
-              <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-                <Tv size={24} />
+          <div key={ov.id} className="shadcn-card p-5 group">
+            <div className="flex justify-between items-start mb-4">
+              <div className="w-10 h-10 rounded border border-border bg-secondary/50 flex items-center justify-center text-foreground">
+                <Tv size={18} />
               </div>
-              <span className="flex items-center gap-1 text-[10px] font-black text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-full">
-                <Activity size={10} />
-                LIVE
+              <span className="flex items-center gap-1.5 text-[9px] font-bold text-foreground border border-foreground/20 px-2 py-0.5 rounded-full bg-background uppercase tracking-tighter">
+                <Activity size={8} className="animate-pulse" />
+                Live
               </span>
             </div>
 
             <div className="space-y-4">
               <div>
-                <h3 className="text-lg font-bold truncate">{ov.name}</h3>
-                <p className="text-xs text-zinc-500 font-mono mt-0.5">{ov.id}</p>
+                <h3 className="text-sm font-bold truncate tracking-tight">{ov.name}</h3>
+                <p className="text-[10px] text-muted-foreground font-mono mt-0.5 uppercase tracking-tighter">{ov.id}</p>
               </div>
 
-              <div className="pt-4 border-t border-white/5 space-y-3">
-                <div className="flex items-center gap-2 text-sm text-zinc-400">
-                  <User size={14} className="text-zinc-600" />
+              <div className="pt-4 border-t border-border space-y-2">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <User size={12} className="text-muted-foreground/60" />
                   <span className="truncate">{ov.user?.email}</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-zinc-400">
-                  <TemplateIcon size={14} className="text-zinc-600" />
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <TemplateIcon size={12} className="text-muted-foreground/60" />
                   <span>{ov.template?.name}</span>
                 </div>
               </div>
 
-              <div className="pt-4 flex gap-2">
+              <div className="pt-2">
                 <a 
                   href={`http://localhost:3000/overlay/${ov.id}`} 
                   target="_blank"
-                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs font-bold hover:bg-white/10 transition-all"
+                  rel="noopener noreferrer"
+                  className="w-full shadcn-button h-9 border border-border bg-background hover:bg-secondary text-[10px] font-bold uppercase tracking-widest gap-2"
                 >
-                  <ExternalLink size={14} />
-                  View Overlay
+                  <ExternalLink size={12} />
+                  Open Viewer
                 </a>
               </div>
             </div>
@@ -67,8 +68,8 @@ export default function OverlayManagement() {
         ))}
 
         {overlays.length === 0 && !loading && (
-          <div className="col-span-full py-20 text-center glass-card border-dashed border-white/10">
-            <p className="text-zinc-500 font-medium">No active overlays found in the system.</p>
+          <div className="col-span-full py-16 text-center shadcn-card bg-secondary/5 border-dashed">
+            <p className="text-muted-foreground text-sm font-medium">No active broadcast instances found.</p>
           </div>
         )}
       </div>
