@@ -140,7 +140,7 @@ export default function RegisterPage() {
             Already have an account? <Link href="/login" className="text-primary font-bold hover:underline">Sign In</Link>
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
