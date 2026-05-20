@@ -20,13 +20,13 @@ export default function Hero() {
             transition={{ duration: 0.6 }}
           >
             <h1 className="text-6xl md:text-[80px] font-bold leading-[1.05] tracking-tight text-foreground mb-8">
-              Stay ahead of the <br />
-              game with our <br />
-              real-time overlays
+              BROADCAST <br />
+              FOOTBALL <br />
+              LIKE A PRO
             </h1>
             
             <p className="text-muted-foreground text-lg md:text-xl max-w-lg mb-10 leading-relaxed font-medium">
-              The ultimate management system for professional streamers. Control your scoreboards, alerts, and dynamic content with zero latency.
+              Real-time football overlays for scoreboard, stats, goals, formations &amp; more. Built for OBS, vMix, eCamm — no downloads, zero latency.
             </p>
 
             <div className="flex flex-wrap items-center gap-8 mb-16">
