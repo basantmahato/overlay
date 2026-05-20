@@ -25,16 +25,16 @@ const faqs = [
 ];
 
 const AccordionItem = ({ question, answer, isOpen, onClick }: { question: string, answer: string, isOpen: boolean, onClick: () => void }) => (
-  <div className="border-t border-zinc-200 py-6 last:border-b">
+  <div className="border-t border-border py-6 last:border-b">
     <button 
       onClick={onClick}
       className="w-full flex justify-between items-center text-left gap-8 group"
     >
-      <span className="text-xl md:text-2xl font-bold text-zinc-900 group-hover:text-black transition-colors leading-tight">
+      <span className="text-xl md:text-2xl font-bold text-foreground group-hover:text-primary transition-colors leading-tight">
         {question}
       </span>
       <div className="flex-shrink-0 w-6 h-6 flex items-center justify-center">
-        {isOpen ? <Minus size={24} className="text-zinc-900" /> : <Plus size={24} className="text-zinc-400 group-hover:text-zinc-900 transition-colors" />}
+        {isOpen ? <Minus size={24} className="text-foreground" /> : <Plus size={24} className="text-muted-foreground/60 group-hover:text-foreground transition-colors" />}
       </div>
     </button>
     <AnimatePresence>
@@ -46,7 +46,7 @@ const AccordionItem = ({ question, answer, isOpen, onClick }: { question: string
           transition={{ duration: 0.3, ease: "easeInOut" }}
           className="overflow-hidden"
         >
-          <p className="pt-6 text-zinc-500 text-base md:text-lg leading-relaxed max-w-3xl">
+          <p className="pt-6 text-muted-foreground text-base md:text-lg leading-relaxed max-w-3xl">
             {answer}
           </p>
         </motion.div>
@@ -59,29 +59,29 @@ export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section className="py-32 bg-white" id="faq">
-      <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16 bg-zinc-50/30 rounded-[3rem] p-12 md:p-20 border border-zinc-100/50">
+    <section className="py-32 bg-background" id="faq">
+      <div className="max-w-[1400px] mx-auto px-6 sm:px-10 lg:px-16 bg-muted/30 rounded-[3rem] p-12 md:p-20 border border-border/50">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
           
           {/* Left Column */}
           <div className="lg:col-span-5">
-            <h2 className="text-5xl md:text-6xl font-bold text-zinc-900 mb-8 tracking-tight">
+            <h2 className="text-5xl md:text-6xl font-bold text-foreground mb-8 tracking-tight">
               Overlay & <br />Streaming FAQs
             </h2>
-            <p className="text-zinc-500 text-lg md:text-xl font-medium leading-relaxed mb-12 max-w-md">
+            <p className="text-muted-foreground text-lg md:text-xl font-medium leading-relaxed mb-12 max-w-md">
               Everything you need to know about setting up and managing your professional overlays to elevate your broadcast.
             </p>
             
             <div className="flex items-center gap-8">
               <Link 
                 href="/questions" 
-                className="px-8 py-4 rounded-full border-2 border-zinc-200 text-zinc-900 font-bold hover:bg-zinc-50 transition-all shadow-sm"
+                className="px-8 py-4 rounded-full border-2 border-border text-foreground font-bold hover:bg-muted transition-all shadow-sm"
               >
                 More Questions
               </Link>
               <Link 
                 href="/contact" 
-                className="text-lg font-bold text-zinc-900 border-b-2 border-zinc-900 pb-0.5 hover:text-zinc-600 hover:border-zinc-400 transition-all"
+                className="text-lg font-bold text-foreground border-b-2 border-foreground pb-0.5 hover:text-muted-foreground hover:border-muted-foreground transition-all"
               >
                 Contact Us
               </Link>

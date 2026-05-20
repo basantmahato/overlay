@@ -50,11 +50,11 @@ const features = [
 
 export default function Features() {
   return (
-    <section id="features" className="py-32 bg-white">
+    <section id="features" className="py-32 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-20">
-          <h2 className="text-xs font-bold text-[#a3e635] tracking-[0.3em] uppercase mb-4">Core Capabilities</h2>
-          <h3 className="text-4xl md:text-6xl font-black tracking-tight text-zinc-900">Built for the Modern Streamer</h3>
+          <h2 className="text-xs font-bold text-primary tracking-[0.3em] uppercase mb-4">Core Capabilities</h2>
+          <h3 className="text-4xl md:text-6xl font-black tracking-tight text-foreground">Built for the Modern Streamer</h3>
         </div>
  
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -65,13 +65,13 @@ export default function Features() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
               viewport={{ once: true }}
-              className="p-10 rounded-[2.5rem] border-2 border-zinc-50 bg-zinc-50/30 hover:bg-white hover:border-zinc-100 hover:shadow-[0_24px_48px_-12px_rgba(0,0,0,0.05)] transition-all group"
+              className="p-10 rounded-[2.5rem] border-2 border-border bg-card/30 hover:bg-card hover:border-primary/20 hover:shadow-[0_24px_48px_-12px_rgba(0,0,0,0.05)] transition-all group"
             >
               <div className={`w-14 h-14 rounded-2xl ${f.bg} flex items-center justify-center mb-8 group-hover:scale-110 transition-transform`}>
                 <f.icon className={f.color} size={28} />
               </div>
-              <h4 className="text-2xl font-bold mb-4 text-zinc-900 tracking-tight">{f.title}</h4>
-              <p className="text-zinc-500 text-[15px] leading-relaxed">
+              <h4 className="text-2xl font-bold mb-4 text-foreground tracking-tight">{f.title}</h4>
+              <p className="text-muted-foreground text-[15px] leading-relaxed">
                 {f.desc}
               </p>
             </motion.div>

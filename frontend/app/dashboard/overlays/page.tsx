@@ -163,37 +163,37 @@ export default function OverlaysPage() {
 
   // Show overlay list when none selected
   return (
-    <div className="p-6 max-w-5xl mx-auto space-y-6">
+    <div className="p-8 max-w-[1400px] mx-auto space-y-10">
       {/* Header & List */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-border">
         <div>
-          <h1 className="text-3xl font-bold">My Overlays</h1>
-          <p className="text-zinc-500 mt-1">Manage and control your live broadcast sources.</p>
+          <h1 className="text-4xl font-bold tracking-tight text-foreground">My Overlays</h1>
+          <p className="text-muted-foreground mt-2 font-medium">Manage and control your live broadcast sources with zero latency.</p>
         </div>
         <button 
           onClick={() => setShowNewModal(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-semibold transition-colors"
+          className="flex items-center gap-2 px-8 py-3 bg-foreground text-background rounded-full font-bold transition-all hover:opacity-90 shadow-xl shadow-black/5"
         >
-          + New Overlay
+          <span className="text-xl">+</span> New Overlay
         </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
         {/* Left Column: List */}
-        <div className="lg:col-span-1 space-y-3">
-          <div className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
-            <div className="p-4 border-b border-zinc-800 bg-zinc-800/30">
-              <span className="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Active Overlays</span>
+        <div className="lg:col-span-4 space-y-4">
+          <div className="bg-card border border-border rounded-[2rem] overflow-hidden shadow-sm">
+            <div className="p-6 border-b border-border bg-muted/30">
+              <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-[0.2em]">Active Overlays</span>
             </div>
-            <div className="p-2 space-y-1 max-h-[400px] overflow-y-auto custom-scrollbar">
+            <div className="p-3 space-y-2 max-h-[600px] overflow-y-auto custom-scrollbar">
               {overlays.length === 0 ? (
-                <div className="p-8 text-center text-zinc-600 text-sm italic">No overlays created yet.</div>
+                <div className="p-12 text-center text-muted-foreground text-sm italic font-medium">No overlays created yet.</div>
               ) : (
                 overlays.map(ov => (
-                  <div key={ov.id} className={`group relative flex items-center gap-2 px-3 py-2 rounded-xl transition-all ${
+                  <div key={ov.id} className={`group relative flex items-center gap-3 px-4 py-3 rounded-2xl transition-all border ${
                     activeId === ov.id 
-                      ? 'bg-indigo-600/10 border border-indigo-500/30 text-indigo-300' 
-                      : 'hover:bg-zinc-800 text-zinc-400'
+                      ? 'bg-primary/5 border-primary/30 text-foreground' 
+                      : 'hover:bg-muted border-transparent text-muted-foreground'
                   }`}>
                     {editingId === ov.id ? (
                       <>
@@ -208,23 +208,23 @@ export default function OverlaysPage() {
                           autoFocus
                           placeholder="Overlay name"
                           aria-label="Overlay name"
-                          className="flex-1 bg-zinc-950 border border-indigo-500/50 rounded-lg px-2 py-1 text-sm text-white focus:outline-none"
+                          className="flex-1 bg-background border border-primary/50 rounded-xl px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/20"
                         />
                         <button 
                           onClick={saveEdit}
-                          className="p-1.5 text-emerald-400 hover:bg-zinc-700 rounded-lg transition-colors"
+                          className="p-2 text-primary hover:bg-primary/10 rounded-xl transition-colors"
                           title="Save"
                           aria-label="Save"
                         >
-                          <Check size={14} />
+                          <Check size={16} />
                         </button>
                         <button 
                           onClick={cancelEdit}
-                          className="p-1.5 text-red-400 hover:bg-zinc-700 rounded-lg transition-colors"
+                          className="p-2 text-red-500 hover:bg-red-500/10 rounded-xl transition-colors"
                           title="Cancel"
                           aria-label="Cancel"
                         >
-                          <X size={14} />
+                          <X size={16} />
                         </button>
                       </>
                     ) : (
@@ -233,20 +233,20 @@ export default function OverlaysPage() {
                           onClick={() => selectOverlay(ov)}
                           className="flex-1 text-left"
                         >
-                          <div className="font-bold text-sm truncate">{ov.name}</div>
-                          <div className="text-[10px] text-zinc-500 mt-0.5">{ov.template.name}</div>
+                          <div className={`font-bold text-[15px] truncate ${activeId === ov.id ? 'text-foreground' : 'text-foreground/80'}`}>{ov.name}</div>
+                          <div className="text-[11px] text-muted-foreground mt-0.5 font-medium uppercase tracking-wider">{ov.template.name}</div>
                         </button>
                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                           <button 
                             onClick={() => startEditing(ov)}
-                            className="p-1.5 text-zinc-400 hover:text-white hover:bg-zinc-700 rounded-lg transition-colors"
+                            className="p-2 text-muted-foreground hover:text-foreground hover:bg-background rounded-xl transition-all"
                             title="Rename"
                           >
                             <Pencil size={14} />
                           </button>
                           <button 
                             onClick={() => deleteOverlay(ov.id)}
-                            className="p-1.5 text-zinc-400 hover:text-red-400 hover:bg-zinc-700 rounded-lg transition-colors"
+                            className="p-2 text-muted-foreground hover:text-red-500 hover:bg-background rounded-xl transition-all"
                             title="Delete"
                           >
                             <Trash2 size={14} />
@@ -262,12 +262,15 @@ export default function OverlaysPage() {
         </div>
 
         {/* Right Column: Empty State */}
-        <div className="lg:col-span-2">
-          <div className="h-64 bg-zinc-900/40 border border-zinc-800 border-dashed rounded-3xl flex flex-col items-center justify-center text-zinc-600">
-            <svg className="w-8 h-8 mb-2 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
-            <p className="text-sm">Select an overlay to control it</p>
+        <div className="lg:col-span-8">
+          <div className="h-[500px] bg-card border-2 border-border border-dashed rounded-[2.5rem] flex flex-col items-center justify-center text-muted-foreground group">
+            <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+              <svg className="w-8 h-8 opacity-40 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <p className="text-lg font-bold text-foreground mb-2">Ready to broadcast?</p>
+            <p className="text-sm font-medium text-muted-foreground/60">Select an overlay from the list to start controlling your stream.</p>
           </div>
         </div>
       </div>

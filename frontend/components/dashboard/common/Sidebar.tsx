@@ -19,16 +19,14 @@ export const Sidebar = ({
   const navItems = [
     { name: 'Overlays', icon: <Layers size={18} />, href: '/dashboard/overlays' },
     { name: 'Templates', icon: <Layout size={18} />, href: '/dashboard/templates' },
-    { name: 'Settings', icon: <Settings size={18} />, href: '/dashboard/settings' },
   ];
 
   const SidebarContent = (
-    <div className="w-64 h-full bg-zinc-900 border-r border-zinc-800 flex flex-col relative z-50">
-      <div className="p-6 border-b border-zinc-800 flex items-center justify-between">
-        <span className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Main Menu</span>
+    <div className="w-64 h-full bg-card border-r border-border flex flex-col relative z-50">
+      <div className="p-6 flex items-center justify-between md:hidden">
         <button 
           onClick={onClose} 
-          className="md:hidden text-zinc-500 hover:text-white p-1"
+          className="text-muted-foreground hover:text-foreground p-1 transition-colors ml-auto"
           title="Close Sidebar"
           aria-label="Close Sidebar"
         >
@@ -36,7 +34,7 @@ export const Sidebar = ({
         </button>
       </div>
       
-      <div className="flex-1 p-4 space-y-2">
+      <div className="flex-1 p-4 space-y-1.5">
         {navItems.map((item) => {
           const isActive = activePath === item.href;
           return (
@@ -46,27 +44,23 @@ export const Sidebar = ({
               onClick={onClose}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
                 isActive 
-                  ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' 
-                  : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
+                  ? 'bg-foreground text-background shadow-lg shadow-black/5' 
+                  : 'text-muted-foreground hover:text-foreground hover:bg-muted'
               }`}
             >
-              {item.icon}
-              <span className="font-semibold text-sm">{item.name}</span>
-              {isActive && (
-                <motion.div 
-                  layoutId="sidebar-active"
-                  className="ml-auto w-1.5 h-1.5 rounded-full bg-white"
-                />
-              )}
+              <div className={isActive ? 'text-background' : 'text-muted-foreground'}>
+                {item.icon}
+              </div>
+              <span className="font-bold text-sm tracking-tight">{item.name}</span>
             </Link>
           );
         })}
       </div>
 
-      <div className="p-4 border-t border-zinc-800">
-        <div className="bg-indigo-500/5 border border-indigo-500/10 rounded-xl p-4">
-          <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-1">Pro Plan</p>
-          <p className="text-xs text-zinc-500 leading-relaxed">You have unlimited access to all templates.</p>
+      <div className="p-4 border-t border-border">
+        <div className="bg-primary/5 border border-primary/10 rounded-2xl p-5">
+          <p className="text-[10px] font-bold text-primary uppercase tracking-[0.2em] mb-2">Pro Plan</p>
+          <p className="text-xs text-muted-foreground leading-relaxed font-medium">You have unlimited access to all templates and overlays.</p>
         </div>
       </div>
     </div>

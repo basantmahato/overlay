@@ -71,50 +71,55 @@ export default function TemplatesPage() {
   if (loading) return null;
 
   return (
-    <div className="p-6 max-w-6xl mx-auto space-y-8">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div className="p-8 max-w-[1400px] mx-auto space-y-10">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-border">
         <div>
-          <h1 className="text-3xl font-bold">Template Gallery</h1>
-          <p className="text-zinc-500 mt-1">Choose a visual style for your next broadcast.</p>
+          <h1 className="text-4xl font-bold tracking-tight text-foreground">Template Gallery</h1>
+          <p className="text-muted-foreground mt-2 font-medium">Choose a visual style for your next broadcast.</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {templates.map((t) => (
           <div 
             key={t.id}
-            className="group bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden transition-all hover:border-indigo-500/50 hover:shadow-2xl hover:shadow-indigo-500/10"
+            className="group bg-card border border-border rounded-xl overflow-hidden transition-all hover:border-primary/50 hover:shadow-2xl hover:shadow-black/5"
           >
-            <div className="relative h-48 w-full bg-zinc-950">
+            <div className="relative h-56 w-full bg-muted">
               <Image 
                 src={getThumb(t.id)} 
                 alt={t.name}
                 fill
-                className="object-cover opacity-60 group-hover:opacity-100 transition-opacity"
+                className="object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent" />
-              <div className="absolute bottom-4 left-6">
-                <span className="px-2 py-1 rounded text-[10px] font-bold uppercase tracking-widest text-white mb-2 inline-block bg-indigo-600">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+              <div className="absolute bottom-6 left-6">
+                <span className="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-[0.2em] text-black mb-3 inline-block bg-primary">
                   Premium
                 </span>
-                <h3 className="text-xl font-bold text-white">{t.name}</h3>
+                <h3 className="text-2xl font-bold text-white tracking-tight">{t.name}</h3>
               </div>
             </div>
-            <div className="p-6">
-              <p className="text-sm text-zinc-400 mb-6 leading-relaxed">
+            <div className="p-8">
+              <p className="text-[15px] text-muted-foreground mb-8 leading-relaxed font-medium">
                 {getDesc(t)}
               </p>
-              <Button onClick={() => handleCreateClick(t.id)} className="w-full py-3 rounded-xl">
-                <Plus size={16} /> Use Template
-              </Button>
+              <button 
+                onClick={() => handleCreateClick(t.id)} 
+                className="w-full py-4 rounded-lg bg-foreground text-background font-bold text-sm flex items-center justify-center gap-2 hover:opacity-90 transition-all shadow-xl shadow-black/5"
+              >
+                <Plus size={18} /> Use Template
+              </button>
             </div>
           </div>
         ))}
 
         {/* Placeholder for future templates */}
-        <div className="border-2 border-dashed border-zinc-800 rounded-3xl flex flex-col items-center justify-center p-8 text-center text-zinc-600">
-          <Layout size={32} className="mb-3 opacity-20" />
-          <p className="text-sm font-medium">New Templates Coming Soon</p>
+        <div className="border-2 border-dashed border-border rounded-xl flex flex-col items-center justify-center p-12 text-center text-muted-foreground/40 group">
+          <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
+            <Layout size={32} className="opacity-40" />
+          </div>
+          <p className="text-sm font-bold tracking-tight text-foreground/40 uppercase tracking-[0.2em]">New Templates Coming Soon</p>
         </div>
       </div>
 

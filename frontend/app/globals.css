@@ -3,69 +3,43 @@
 @theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  
-  --color-pitch: var(--pitch);
-  --color-pitch2: var(--pitch2);
-  --color-turf: var(--turf);
-  --color-amber: var(--amber);
-  --color-amber-d: var(--amberD);
-  --color-slate: var(--slate);
-  --color-slate-m: var(--slateM);
-  --color-slate-l: var(--slateL);
-  --color-slate-b: var(--slateB);
-  --color-ice: var(--ice);
-  --color-ice-d: var(--iceD);
-  --color-offwhite: var(--offwhite);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
   --color-muted: var(--muted);
-  --color-faint: var(--faint);
-  --color-red: var(--red);
-  --color-red-d: var(--redD);
-  --color-teal: var(--teal);
-  --color-teal-d: var(--tealD);
-  --color-txt: var(--txt);
-  --color-txt-m: var(--txtM);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
 }
 
 :root {
+  --background: #ffffff;
+  --foreground: #09090b;
+  --card: #ffffff;
+  --card-foreground: #09090b;
+  --primary: #a3e635;
+  --primary-foreground: #09090b;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --border: #e4e4e7;
+}
+
+.dark {
   --background: #09090b;
   --foreground: #fafafa;
-  
-  /* Footimes Theme */
-  --pitch: #1a5c2a;
-  --pitch2: #166325;
-  --turf: #0f3d1a;
-  --amber: #f5a623;
-  --amberD: #c47d0d;
-  --slate: #0f1923;
-  --slateM: #162030;
-  --slateL: #1e2d3d;
-  --slateB: #253548;
-  --ice: #e8f4fd;
-  --iceD: #b8d4ec;
-  --white: #ffffff;
-  --offwhite: #d4dde8;
-  --muted: #6b8299;
-  --faint: #3a5068;
-  --red: #e63946;
-  --redD: #b02a35;
-  --teal: #00c8a0;
-  --tealD: #009678;
-  --txt: #e8f4fd;
-  --txtM: #8fadc8;
+  --card: #09090b;
+  --card-foreground: #fafafa;
+  --primary: #a3e635;
+  --primary-foreground: #09090b;
+  --muted: #27272a;
+  --muted-foreground: #a1a1aa;
+  --border: #27272a;
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-rajdhani), sans-serif;
-}
-
-.font-teko {
-  font-family: var(--font-teko), sans-serif;
-}
-
-.font-rajdhani {
-  font-family: var(--font-rajdhani), sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .glass {
@@ -75,18 +49,27 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.dark .glass {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
 .glass-card {
   background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
+.dark .glass-card {
+  background: linear-gradient(135deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0) 100%);
+}
+
 .premium-gradient {
-  background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
+  background: linear-gradient(90deg, #a3e635 0%, #65a30d 100%);
 }
 
 .premium-text-gradient {
-  background: linear-gradient(90deg, #818cf8 0%, #c084fc 100%);
+  background: linear-gradient(90deg, #a3e635 0%, #84cc16 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }

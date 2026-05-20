@@ -24,7 +24,7 @@ const templates = [
       defaultState: {
         teamA_name: 'HOME', teamA_abbr: 'H', teamA_color: '#3b82f6', teamA_score: 0,
         teamB_name: 'AWAY', teamB_abbr: 'A', teamB_color: '#e63946', teamB_score: 0,
-        match_time: '15:00', match_phase: '1st',
+        match_time: '0\'', match_phase: 'LIVE',
         play_clock: 40, down_distance: '1st & 10', possession: 'A',
         competition: 'Premier League', venue: 'Old Trafford',
         events: [], eventDisplayMinutes: 1,
