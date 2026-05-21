@@ -141,4 +141,52 @@ The server uses Socket.io for low-latency updates between the Dashboard and OBS 
   - **Payload**: The updated match state object.
   - **Description**: Sent whenever a `PATCH /state` REST call is made or a `liveUpdate` socket event is received.
 
+---
+
+## Integrations
+
+The backend also exposes football news platform endpoints under `/api/v1/integrations`.
+
+These endpoints require a service key using either:
+
+- `Authorization: Bearer <NEWS_PLATFORM_API_KEY>`
+- `x-api-key: <NEWS_PLATFORM_API_KEY>`
+
+Set the key in the backend environment:
+
+```env
+NEWS_PLATFORM_API_KEY=your-secret-news-platform-key
+```
+
+- `GET /api/v1/integrations/live-matches`
+  - **Description**: Lists active overlays as normalized football live-match records.
+  - **Protected**: Yes, integration API key required.
+
+- `GET /api/v1/integrations/live-matches/:overlayId`
+  - **Description**: Returns one active overlay as a normalized football live-match record.
+  - **Protected**: Yes, integration API key required.
+
+Example response:
+
+```json
+{
+  "id": "overlay-id",
+  "overlayName": "Main Match",
+  "status": "LIVE",
+  "sport": "football",
+  "competition": "Premier League",
+  "venue": "Emirates Stadium",
+  "homeTeam": "Arsenal",
+  "awayTeam": "Chelsea",
+  "homeAbbr": "ARS",
+  "awayAbbr": "CHE",
+  "homeScore": 2,
+  "awayScore": 1,
+  "minute": "67:21",
+  "phase": "2nd Half",
+  "events": [],
+  "lastEvent": null,
+  "updatedAt": "2026-05-21T10:30:00.000Z"
+}
+```
 

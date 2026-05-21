@@ -4,6 +4,7 @@ const authRoutes = require('./routes/authRoutes');
 const overlayRoutes = require('./routes/overlayRoutes');
 const templateRoutes = require('./routes/templateRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const integrationRoutes = require('./routes/integrationRoutes');
 const { errorHandler } = require('./middleware/errorHandler');
 
 const app = express();
@@ -22,6 +23,7 @@ app.use(`${API_V1_PREFIX}/auth`, authRoutes);
 app.use(`${API_V1_PREFIX}/overlays`, overlayRoutes);
 app.use(`${API_V1_PREFIX}/templates`, templateRoutes);
 app.use(`${API_V1_PREFIX}/admin`, adminRoutes);
+app.use(`${API_V1_PREFIX}/integrations`, integrationRoutes);
 
 // Base route
 app.get('/', (req, res) => {
